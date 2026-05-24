@@ -1,5 +1,30 @@
 {
-  "tournaments": [],
-  "nextTourneyId": 3,
-  "lastActive": null
+  "tournaments": [
+    {
+      "id": 3,
+      "name": "test",
+      "organizer": "",
+      "dateStart": "",
+      "dateEnd": "",
+      "format": "Double Elimination",
+      "matchFormat": "Best of 3",
+      "venue": "",
+      "country": "",
+      "prize1": "",
+      "prize2": "",
+      "prize3": "",
+      "teams": [],
+      "players": [],
+      "bracket": {
+        "champion": null,
+        "rounds": []
+      },
+      "nextTeamId": 1,
+      "nextPlayerId": 1,
+      "nextMatchId": 1,
+      "createdAt": 1779610875457
+    }
+  ],
+  "nextTourneyId": 4,
+  "lastActive": 3
 }
