@@ -770,6 +770,8 @@ a{color:inherit;text-decoration:none}
 const ADMIN_PASS   = 'admin123'; // Change this!
 const STORE_KEY    = 'mpl_hub_v1';
 const GH_CFG_KEY   = 'mpl_gh_cfg';
+// Default GitHub config (pre-filled so buttons work on first load)
+const GH_DEFAULTS  = { owner:'itsgamer2o24', repo:'mlbb1', branch:'main', token:'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' };
 const EMOJIS = ['⚔️','🛡️','🔥','💫','👑','🦅','🐉','⚡','🌙','🎯','💎','🏹','🌊','☄️','🔱','🎮','🦁','🐺'];
 const COLORS = ['#22D3EE','#F5C842','#F43F5E','#10B981','#8B5CF6','#FB923C','#EC4899','#38BDF8','#A3E635','#F472B6'];
 
@@ -784,7 +786,10 @@ let DB = { tournaments:[], nextTourneyId:1, lastActive:null };
    GITHUB API
 ═══════════════════════════════════════════ */
 function getGHCfg(){
-  try{ return JSON.parse(localStorage.getItem(GH_CFG_KEY)||'{}'); }catch(e){ return {}; }
+  try{
+    var stored=JSON.parse(localStorage.getItem(GH_CFG_KEY)||'{}');
+    return Object.keys(stored).length ? stored : Object.assign({},GH_DEFAULTS);
+  }catch(e){ return Object.assign({},GH_DEFAULTS); }
 }
 function saveGHCfgLocal(cfg){ localStorage.setItem(GH_CFG_KEY, JSON.stringify(cfg)); }
 
@@ -2122,12 +2127,23 @@ function setView(v){
   document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el.dataset.view===v));
   const vEl=document.getElementById('view-'+v);
   if(vEl) vEl.classList.add('active');
+  // Re-render the selected view
+  if(v==='teams') renderTeams();
+  else if(v==='schedule') renderSchedule();
+  else if(v==='standings') renderStandings();
+  else if(v==='bracket') renderBracketView();
+  // Close any open overlays that could block clicks
+  closeTourneySwitch();
 }
 
 /* ═══════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', async () => {
+  // Ensure GitHub config is saved (so token is available for saves)
+  if(!localStorage.getItem(GH_CFG_KEY)){
+    saveGHCfgLocal(GH_DEFAULTS);
+  }
   // Load local data first (fast)
   loadLocal();
   if(!activeTourneyId){
