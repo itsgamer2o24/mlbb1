@@ -25,6 +25,18 @@
           "losses": 0,
           "kda": 0,
           "pts": 0
+        },
+        {
+          "id": 2,
+          "name": "srf",
+          "tag": "1WS",
+          "region": "N/A",
+          "color": "#22d3ee",
+          "emoji": "🐉",
+          "wins": 0,
+          "losses": 0,
+          "kda": 0,
+          "pts": 0
         }
       ],
       "players": [],
@@ -32,7 +44,7 @@
         "champion": null,
         "rounds": []
       },
-      "nextTeamId": 2,
+      "nextTeamId": 3,
       "nextPlayerId": 1,
       "nextMatchId": 1,
       "createdAt": 1779610875457
