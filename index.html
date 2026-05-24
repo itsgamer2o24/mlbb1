@@ -1508,29 +1508,107 @@ function buildConnectorSVG(fromCount,toCount,cardH,fromGap,toGap,svgH,connW){
   return `<svg width="${connW}" height="${svgH}" class="vb-svg" viewBox="0 0 ${connW} ${svgH}">${paths}</svg>`;
 }
 
-/* ── Double Elimination – MPL-style single horizontal row ── */
+/* ── Double Elimination – dispatcher ── */
 function buildDEBracketHTML(t,b){
+  if(!b.wb||!b.wb.length) return '<div class="empty"><div class="empty-ico">🏆</div><div class="empty-t">No rounds yet</div></div>';
+  if(t.teams.length===3) return build3TeamBracketHTML(t,b);
   const allRounds=[];
-  if(b.wb&&b.wb.length){
-    b.wb.forEach(r=>{
-      const vis=r.matches.filter(m=>!m.isBye||(m.team1&&m.team2));
-      if(vis.length) allRounds.push({name:r.name,matches:vis,section:'ub'});
-    });
-  }
-  if(b.lb&&b.lb.length){
-    b.lb.forEach(r=>{
-      if(r.matches.length) allRounds.push({name:r.name,matches:r.matches,section:'lb'});
-    });
-  }
-  if(b.gf&&b.gf.matches.length){
-    allRounds.push({name:'Grand Final',matches:b.gf.matches,section:'gf'});
-  }
-  if(b.gfReset&&b.gfReset.matches.length){
-    allRounds.push({name:'GF Reset',matches:b.gfReset.matches,section:'gfr'});
-  }
+  b.wb.forEach(r=>{
+    const vis=r.matches.filter(m=>!m.isBye||(m.team1&&m.team2));
+    if(vis.length) allRounds.push({name:r.name,matches:vis,section:'ub'});
+  });
+  b.lb?.forEach(r=>{ if(r.matches.length) allRounds.push({name:r.name,matches:r.matches,section:'lb'}); });
+  if(b.gf?.matches.length) allRounds.push({name:'Grand Final',matches:b.gf.matches,section:'gf'});
+  if(b.gfReset?.matches.length) allRounds.push({name:'GF Reset',matches:b.gfReset.matches,section:'gfr'});
   if(!allRounds.length) return '<div class="empty"><div class="empty-ico">🏆</div><div class="empty-t">No rounds yet</div></div>';
   const champ=b.champion?getTeamFrom(t,b.champion):null;
   return buildFullHorizontalBracket(t,allRounds,champ,b);
+}
+
+/* ── 3-team screenshot-style 3-column layout ── */
+function build3TeamBracketHTML(t,b){
+  const ubMatch=b.wb[0]?.matches[0]||null;
+  const lbMatch=b.lb?.[0]?.matches[0]||null;
+  const gfMatch=b.gf?.matches[0]||null;
+  const gfrMatch=b.gfReset?.matches[0]||null;
+  const champ=b.champion?getTeamFrom(t,b.champion):null;
+  const eliminated=t.teams.filter(tm=>tm.losses>=2);
+
+  function sectionBadge(label,col,bg,border){
+    return `<div style="display:inline-flex;align-items:center;gap:5px;font-family:'Orbitron',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:${col};background:${bg};border:1px solid ${border};border-radius:20px;padding:4px 12px;white-space:nowrap">${label}</div>`;
+  }
+  function elimCard(team){
+    const col=team?.color||'var(--red)';
+    return `<div style="background:rgba(244,63,94,0.07);border:1px solid rgba(244,63,94,0.28);border-radius:10px;padding:10px 14px;margin-top:10px;display:flex;align-items:center;gap:10px">
+      <div style="width:28px;height:28px;border-radius:7px;background:${col}22;display:flex;align-items:center;justify-content:center;font-size:13px">${team?.emoji||'👾'}</div>
+      <div style="font-size:13px;font-weight:800;color:${col};flex:1">${team?.name||'?'}</div>
+      <div style="font-size:9px;font-weight:800;color:var(--red);background:rgba(244,63,94,0.12);border:1px solid rgba(244,63,94,0.3);border-radius:4px;padding:2px 7px;letter-spacing:.5px">ELIMINATED</div>
+    </div>`;
+  }
+  function gfCard(m){
+    const showReset=gfrMatch&&gfrMatch.team1&&gfrMatch.team2;
+    const activeMatch=showReset?gfrMatch:m;
+    const activeDone=activeMatch?.status==='done';
+    const aTA=activeMatch?.team1?getTeamFrom(t,activeMatch.team1):null;
+    const aTB=activeMatch?.team2?getTeamFrom(t,activeMatch.team2):null;
+    const w=activeMatch?.winner;
+    const ubWinner=b.wb?.[b.wb.length-1]?.matches?.[0]?.winner;
+    const ubTeam=ubWinner?getTeamFrom(t,ubWinner):null;
+    function teamRow(team,teamId,score,isUB){
+      const isW=activeDone&&w===teamId;
+      const isL=activeDone&&w!==null&&w!==teamId;
+      const col=team?.color||'var(--muted)';
+      const tagCol=isUB?'var(--blue)':'var(--red)';
+      const tagBg=isUB?'rgba(34,211,238,0.12)':'rgba(244,63,94,0.12)';
+      const tagBord=isUB?'rgba(34,211,238,0.3)':'rgba(244,63,94,0.3)';
+      return `<div style="display:flex;align-items:center;padding:10px 10px;border-top:1px solid rgba(255,255,255,0.05);${isW?'background:rgba(245,200,66,0.05)':''}${isL?';opacity:.35':''}">
+        <div style="width:4px;align-self:stretch;background:${col}${isW?'':'55'};margin-right:8px"></div>
+        <div style="font-size:9px;font-weight:800;color:${tagCol};background:${tagBg};border:1px solid ${tagBord};border-radius:4px;padding:1px 5px;margin-right:8px;white-space:nowrap">${isUB?'UB':'LB'}</div>
+        <div style="font-size:13px;font-weight:800;flex:1;color:${isW?col:'var(--text)'}">${team?team.name:'WAITING'}</div>
+        <div style="font-family:'Orbitron',monospace;font-size:17px;font-weight:900;min-width:24px;text-align:center;color:${isW?'var(--gold)':'var(--muted)'}">${score!==null&&score!==undefined?score:'—'}</div>
+        <div style="width:18px;text-align:center;font-size:12px;color:var(--gold)">${isW?'★':''}</div>
+      </div>`;
+    }
+    const isUBTeam1=aTA&&ubTeam&&aTA.id===ubTeam.id;
+    const hdr=`<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 12px;background:rgba(0,0,0,0.5);border-bottom:1px solid rgba(255,255,255,0.05)">
+      <span style="font-family:'Orbitron',monospace;font-size:8px;color:var(--muted);letter-spacing:1px">M${activeMatch?.id||'?'}</span>
+      <div style="font-size:8px;font-weight:800;color:var(--gold);background:rgba(245,200,66,0.14);border:1px solid rgba(245,200,66,0.35);border-radius:4px;padding:2px 7px">${showReset?'GF RESET':'🏆 GRAND FINAL'}</div>
+      ${activeMatch?.format?`<span style="font-family:'Orbitron',monospace;font-size:8px;color:var(--gold);opacity:.8">${activeMatch.format}</span>`:''}
+    </div>`;
+    const resetRule=!showReset&&!champ
+      ?`<div style="padding:10px 12px;font-size:10px;color:var(--muted2);line-height:1.6;border-top:1px solid rgba(255,255,255,0.05);background:rgba(0,0,0,0.2)"><b style="color:var(--gold)">GF Reset rule:</b> if the LB team (${aTB?.name||'LB team'}) wins, a reset match is played. The UB team (${aTA?.name||'UB team'}) has bracket advantage.</div>`
+      :champ?`<div style="padding:10px 12px;font-size:10px;color:var(--gold);line-height:1.6;border-top:1px solid rgba(255,255,255,0.05);text-align:center;font-weight:800">🏆 ${champ.name} is the Champion!</div>`:'';
+    return `<div style="background:#0b1220;border:2px solid rgba(245,200,66,0.65);border-radius:10px;overflow:hidden;box-shadow:0 0 24px rgba(245,200,66,0.06)">${hdr}${teamRow(aTA,activeMatch?.team1,activeMatch?.score1,isUBTeam1)}${teamRow(aTB,activeMatch?.team2,activeMatch?.score2,!isUBTeam1)}${resetRule}</div>`;
+  }
+
+  // Top banner (live or next match)
+  let topBanner='';
+  for(const m of [ubMatch,lbMatch,gfMatch,gfrMatch].filter(Boolean)){
+    if(m.status==='live'){
+      const ta=m.team1?getTeamFrom(t,m.team1):null,tb=m.team2?getTeamFrom(t,m.team2):null;
+      if(ta&&tb){ topBanner=`<div style="display:inline-flex;align-items:center;gap:10px;background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.4);border-radius:12px;padding:10px 18px;margin-bottom:14px;flex-wrap:wrap"><div style="display:flex;align-items:center;gap:5px"><div style="width:7px;height:7px;border-radius:50%;background:var(--red);animation:pulse-dot .9s infinite"></div><span style="font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:var(--red);letter-spacing:1.5px">LIVE NOW</span></div><div style="font-size:12px;font-weight:800"><span style="color:${ta.color||'var(--text)'}">${ta.name}</span><span style="color:var(--muted);margin:0 8px">VS</span><span style="color:${tb.color||'var(--text)'}">${tb.name}</span></div><div style="font-size:10px;color:var(--muted2)">· M${m.id}${m.format?' · '+m.format:''}</div></div>`; break; }
+    }
+  }
+  if(!topBanner){
+    for(const m of [ubMatch,lbMatch,gfMatch,gfrMatch].filter(Boolean)){
+      if(m.status!=='done'){
+        const ta=m.team1?getTeamFrom(t,m.team1):null,tb=m.team2?getTeamFrom(t,m.team2):null;
+        if(ta&&tb){ topBanner=`<div style="display:inline-flex;align-items:center;gap:10px;background:rgba(34,211,238,0.06);border:1px solid rgba(34,211,238,0.2);border-radius:12px;padding:10px 18px;margin-bottom:14px;flex-wrap:wrap"><span style="font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:var(--blue);letter-spacing:1.5px">⚔ NEXT MATCH</span><div style="font-size:12px;font-weight:800"><span style="color:${ta.color||'var(--text)'}">${ta.name}</span><span style="color:var(--muted);margin:0 8px">VS</span><span style="color:${tb.color||'var(--text)'}">${tb.name}</span></div><div style="font-size:10px;color:var(--muted2)">· M${m.id}${m.format?' · '+m.format:''}</div></div>`; break; }
+      }
+    }
+  }
+
+  function colHdr(text,col){ return `<div style="font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:${col};letter-spacing:1.8px;text-transform:uppercase;text-align:center;padding-bottom:10px">${text}</div>`; }
+
+  const ubCol=`<div style="flex-shrink:0;width:240px">${colHdr('UB Round 1','var(--muted2)')}${ubMatch?buildVisualMatchCard(t,ubMatch,false):''}</div>`;
+  const dropConn=`<div style="display:flex;flex-direction:column;align-items:center;width:48px;flex-shrink:0;padding-top:20px"><div style="font-size:9px;font-weight:700;color:var(--red);white-space:nowrap;letter-spacing:.5px;margin-bottom:2px">↓ drops</div><svg width="32" height="60" style="overflow:visible"><line x1="16" y1="0" x2="16" y2="52" stroke="rgba(244,63,94,0.4)" stroke-width="1.5" stroke-dasharray="4 3"/></svg></div>`;
+  const lbCol=`<div style="flex-shrink:0;width:240px">${colHdr('Lower Bracket','var(--muted2)')}${lbMatch?buildVisualMatchCard(t,lbMatch,false):''}${eliminated.length?elimCard(eliminated[0]):''}</div>`;
+  const gfConn=`<div style="display:flex;align-items:center;justify-content:center;width:48px;flex-shrink:0;padding-top:${10+44}px"><div style="display:flex;flex-direction:column;align-items:center;gap:1px"><svg width="32" height="14" style="overflow:visible;display:block"><defs><marker id="arr5t" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="rgba(245,200,66,0.5)" stroke-width="1.5" stroke-linecap="round"/></marker></defs><line x1="0" y1="7" x2="28" y2="7" stroke="rgba(245,200,66,0.5)" stroke-width="1.5" marker-end="url(#arr5t)"/></svg><div style="font-size:9px;font-weight:700;color:rgba(245,200,66,0.6);white-space:nowrap;letter-spacing:.5px">→ GF</div></div></div>`;
+  const gfCol=`<div style="flex-shrink:0;width:260px">${colHdr('Grand Final','var(--gold)')}${gfCard(gfMatch)}</div>`;
+  const badges=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">${sectionBadge('⬆ Upper Bracket','var(--blue)','rgba(34,211,238,0.08)','rgba(34,211,238,0.22)')}${sectionBadge('⬇ Lower Bracket','var(--red)','rgba(244,63,94,0.08)','rgba(244,63,94,0.22)')}${sectionBadge('🏆 Grand Final','var(--gold)','rgba(245,200,66,0.08)','rgba(245,200,66,0.28)')}</div>`;
+  const champBox=champ?`<div style="margin-top:20px;display:flex;justify-content:center"><div class="vchamp"><div class="vchamp-trophy">🏆</div><div class="vchamp-name" style="color:${champ.color||'var(--gold)'}">${champ.name}</div><div class="vchamp-lbl">CHAMPION</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Season 2025</div></div></div>`:'';
+
+  return `<div>${topBanner}${badges}<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:12px"><div style="display:inline-flex;align-items:flex-start;gap:0;min-width:max-content">${ubCol}${dropConn}${lbCol}${gfConn}${gfCol}</div></div>${champBox}</div>`;
 }
 
 function buildFullHorizontalBracket(t,rounds,champ,b){
