@@ -37,6 +37,18 @@
           "losses": 0,
           "kda": 0,
           "pts": 0
+        },
+        {
+          "id": 3,
+          "name": "sjkj1",
+          "tag": "212",
+          "region": "N/A",
+          "color": "#22d3ee",
+          "emoji": "🐺",
+          "wins": 0,
+          "losses": 0,
+          "kda": 0,
+          "pts": 0
         }
       ],
       "players": [],
@@ -44,7 +56,7 @@
         "champion": null,
         "rounds": []
       },
-      "nextTeamId": 3,
+      "nextTeamId": 4,
       "nextPlayerId": 1,
       "nextMatchId": 1,
       "createdAt": 1779610875457
