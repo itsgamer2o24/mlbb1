@@ -770,7 +770,6 @@ a{color:inherit;text-decoration:none}
 const ADMIN_PASS   = 'admin123'; // Change this!
 const STORE_KEY    = 'mpl_hub_v1';
 const GH_CFG_KEY   = 'mpl_gh_cfg';
-// Default GitHub config (pre-filled so buttons work on first load)
 const GH_DEFAULTS  = { owner:'itsgamer2o24', repo:'mlbb1', branch:'main', token:'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' };
 const EMOJIS = ['⚔️','🛡️','🔥','💫','👑','🦅','🐉','⚡','🌙','🎯','💎','🏹','🌊','☄️','🔱','🎮','🦁','🐺'];
 const COLORS = ['#22D3EE','#F5C842','#F43F5E','#10B981','#8B5CF6','#FB923C','#EC4899','#38BDF8','#A3E635','#F472B6'];
@@ -1418,87 +1417,102 @@ function buildSEBracketHTML(t,b){
   if(!b.rounds||!b.rounds.length) return '';
   const rounds=b.rounds;
   const champ=b.champion?getTeamFrom(t,b.champion):null;
-  const CARD_H=88,GAP=14,CONN_W=36,HDR=32;
-  const LC='rgba(245,200,66,0.4)';
+
+  // Card height constant (px) for connector math
+  const CARD_H=88, GAP=14, LABEL_H=32, CONN_W=40;
+
+  // Build per-round match counts
   const sizes=rounds.map(r=>r.matches.length);
-  let banner='';
-  outer:for(const r of rounds){
-    for(const m of r.matches){
-      if(m.status==='live'){
-        const ta=m.team1?getTeamFrom(t,m.team1):null,tb=m.team2?getTeamFrom(t,m.team2):null;
-        if(ta&&tb){banner=`<div style="display:inline-flex;align-items:center;gap:10px;background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.4);border-radius:12px;padding:10px 18px;margin-bottom:14px;flex-wrap:wrap"><div style="display:flex;align-items:center;gap:5px"><div style="width:7px;height:7px;border-radius:50%;background:var(--red);animation:pulse-dot .9s infinite"></div><span style="font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:var(--red);letter-spacing:1.5px">LIVE NOW</span></div><div style="font-size:12px;font-weight:800"><span style="color:${ta.color||'var(--text)'}">${ta.name}</span><span style="color:var(--muted);margin:0 8px">VS</span><span style="color:${tb.color||'var(--text)'}">${tb.name}</span></div><div style="font-size:10px;color:var(--muted2)">M${m.id}</div></div>`;break outer;}
-      }
-    }
-  }
-  if(!banner){
-    outer2:for(const r of rounds){
-      for(const m of r.matches){
-        if(m.status!=='done'){
-          const ta=m.team1?getTeamFrom(t,m.team1):null,tb=m.team2?getTeamFrom(t,m.team2):null;
-          if(ta&&tb){banner=`<div style="display:inline-flex;align-items:center;gap:10px;background:rgba(34,211,238,0.06);border:1px solid rgba(34,211,238,0.2);border-radius:12px;padding:10px 18px;margin-bottom:14px;flex-wrap:wrap"><span style="font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:var(--blue);letter-spacing:1.5px">NEXT MATCH</span><div style="font-size:12px;font-weight:800"><span style="color:${ta.color||'var(--text)'}">${ta.name}</span><span style="color:var(--muted);margin:0 8px">VS</span><span style="color:${tb.color||'var(--text)'}">${tb.name}</span></div><div style="font-size:10px;color:var(--muted2)">${r.name} M${m.id}</div></div>`;break outer2;}
-        }
-      }
-    }
-  }
-  let html=`<div>${banner}<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:12px"><div style="display:inline-flex;align-items:flex-start;gap:0;min-width:max-content;padding:4px 8px 12px">`;
+
+  let html=`<div class="vbracket-wrap"><div style="display:flex;flex-direction:column">`;
+
+  // Labels row
+  html+=`<div style="display:inline-flex;align-items:flex-start;gap:0;padding:0 12px 0 12px;min-width:max-content">`;
+  rounds.forEach((r,ri)=>{
+    html+=`<div style="width:240px;text-align:center;font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:var(--muted2);letter-spacing:2px;text-transform:uppercase;padding-bottom:8px">${r.name.toUpperCase()}</div>`;
+    if(ri<rounds.length-1) html+=`<div style="width:${CONN_W}px"></div>`;
+  });
+  html+=`<div style="width:${CONN_W}px"></div><div style="width:140px;text-align:center;font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase;padding-bottom:8px">CHAMPION</div>`;
+  html+=`</div>`;
+
+  // Bracket body
+  html+=`<div style="display:inline-flex;align-items:flex-start;padding:0 12px 12px;min-width:max-content">`;
+
   rounds.forEach((round,ri)=>{
-    const isLast=ri===rounds.length-1;
+    const prevMatchCount=ri===0?0:sizes[ri-1];
     const curCount=sizes[ri];
-    const prevCount=ri===0?0:sizes[ri-1];
-    const prevH=ri===0?0:prevCount*CARD_H+(prevCount-1)*GAP;
-    const curH=curCount*CARD_H+(curCount-1)*GAP;
-    const spacing=ri===0?GAP:Math.max(GAP,Math.floor((prevH-curH)/Math.max(curCount-1,1))+GAP);
-    const hdrCol=isLast?'var(--gold)':'var(--muted2)';
-    const hdrBord=isLast?'rgba(245,200,66,0.18)':'rgba(255,255,255,0.06)';
-    html+=`<div style="display:flex;flex-direction:column;width:240px;flex-shrink:0">`;
-    html+=`<div style="font-family:'Orbitron',monospace;font-size:9px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:${hdrCol};text-align:center;padding:5px 0 9px;border-bottom:1px solid ${hdrBord};margin-bottom:10px">${round.name.toUpperCase()}</div>`;
-    html+=`<div style="display:flex;flex-direction:column;gap:${spacing}px">`;
-    round.matches.forEach(m=>{ html+=buildVisualMatchCard(t,m,isLast); });
-    html+=`</div></div>`;
+    const totalH_prev=ri===0?0:(prevMatchCount*CARD_H+(prevMatchCount-1)*GAP);
+    const totalH_cur=curCount*CARD_H+(curCount-1)*GAP;
+
+    // Calculate spacing between matches for this round
+    // Each match in this round "absorbs" 2 from previous
+    const spacingBetween=ri===0?GAP:Math.floor((totalH_prev-totalH_cur)/(Math.max(curCount-1,1)))+GAP;
+
+    html+=`<div style="display:flex;flex-direction:column;width:240px;gap:${spacingBetween}px">`;
+    round.matches.forEach((m,mi)=>{
+      html+=buildVisualMatchCard(t,m,false);
+    });
+    html+=`</div>`;
+
+    // Connector SVG between rounds
     if(ri<rounds.length-1){
-      const nxt=sizes[ri+1];
-      const curTotal=curCount*CARD_H+(curCount>1?(curCount-1)*spacing:0);
-      const nxtSpacing=Math.max(GAP,Math.floor((curTotal-(nxt*CARD_H+(nxt-1)*GAP))/Math.max(nxt-1,1))+GAP);
-      const nxtTotal=nxt*CARD_H+(nxt>1?(nxt-1)*nxtSpacing:0);
-      const svgH=Math.max(curTotal,nxtTotal,CARD_H)+20;
-      html+=buildConnectorSVG(curCount,nxt,CARD_H,spacing,nxtSpacing,svgH,CONN_W,LC,HDR);
+      const nextCount=sizes[ri+1];
+      const curTotal=curCount*CARD_H+(curCount>1?(curCount-1)*spacingBetween:0);
+      const nextSpacing=ri+1===rounds.length-1?GAP:Math.floor((curTotal-(nextCount*CARD_H+(nextCount-1)*GAP))/(Math.max(nextCount-1,1)))+GAP;
+      const nextTotal=nextCount*CARD_H+(nextCount>1?(nextCount-1)*nextSpacing:0);
+      const svgH=Math.max(curTotal,nextTotal,CARD_H)+20;
+      html+=buildConnectorSVG(curCount,nextCount,CARD_H,spacingBetween,nextSpacing,svgH,CONN_W);
     }
   });
-  const cCol=champ?'var(--gold)':'rgba(255,255,255,0.08)';
-  html+=`<svg width="${CONN_W}" height="${CARD_H+20+HDR}" style="overflow:visible;display:block;flex-shrink:0;align-self:flex-start"><line x1="0" y1="${HDR+(CARD_H+20)/2}" x2="${CONN_W}" y2="${HDR+(CARD_H+20)/2}" stroke="${cCol}" stroke-width="1.5"/></svg>`;
-  html+=`<div style="display:flex;align-items:flex-start;padding-top:${HDR}px">`;
-  html+=champ
-    ?`<div class="vchamp"><div class="vchamp-trophy">&#127942;</div><div class="vchamp-name" style="color:${champ.color||'var(--gold)'}">${champ.name}</div><div class="vchamp-lbl">CHAMPION</div></div>`
-    :`<div class="vchamp"><div class="vchamp-trophy">&#127942;</div><div class="vchamp-name">TBD</div><div class="vchamp-lbl">CHAMPION</div></div>`;
-  html+=`</div></div></div></div>`;
+
+  // Last connector to champion
+  const lastRound=rounds[rounds.length-1];
+  html+=`<div style="width:${CONN_W}px;display:flex;align-items:center;justify-content:center">
+    <div style="width:${CONN_W}px;height:2px;background:${champ?'var(--gold)':'rgba(255,255,255,0.1)'}"></div>
+  </div>`;
+
+  // Champion box
+  html+=`<div style="display:flex;align-items:center;width:140px">`;
+  if(champ){
+    html+=`<div class="vchamp"><div class="vchamp-trophy">🏆</div><div class="vchamp-name" style="color:${champ.color||'var(--gold)'}">${champ.name}</div><div class="vchamp-lbl">CHAMPION</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Season 2025</div></div>`;
+  } else {
+    html+=`<div class="vchamp"><div class="vchamp-trophy">🏆</div><div class="vchamp-name">TBD</div><div class="vchamp-lbl">CHAMPION</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Season 2025</div></div>`;
+  }
+  html+=`</div>`;
+
+  html+=`</div></div></div>`;
   return html;
 }
 
-function buildConnectorSVG(fromCount,toCount,cardH,fromGap,toGap,svgH,connW,color,hdr){
-  color=color||'rgba(245,200,66,0.4)';
-  hdr=hdr||0;
-  const fromY=[],toY=[];
+function buildConnectorSVG(fromCount,toCount,cardH,fromGap,toGap,svgH,connW){
+  // Entry points (right side of from-round matches, center of card)
+  const fromY=[];
   for(let i=0;i<fromCount;i++) fromY.push(i*(cardH+fromGap)+cardH/2);
+  // Exit points (left side of to-round matches, center of card)
+  const toY=[];
   for(let i=0;i<toCount;i++) toY.push(i*(cardH+toGap)+cardH/2);
+
   let paths='';
   for(let j=0;j<toCount;j++){
-    const s1=fromY[j*2]??fromY[fromY.length-1];
-    const s2=fromY[j*2+1]??s1;
-    const mid=(s1+s2)/2;
+    const src1=fromY[j*2]??fromY[fromY.length-1];
+    const src2=fromY[j*2+1]??src1;
+    const mid=(src1+src2)/2;
     const dst=toY[j];
-    paths+=`<line x1="0" y1="${s1}" x2="${connW/2}" y2="${s1}" stroke="${color}" stroke-width="1.5"/>`;
-    if(s2!==s1){
-      paths+=`<line x1="0" y1="${s2}" x2="${connW/2}" y2="${s2}" stroke="${color}" stroke-width="1.5"/>`;
-      paths+=`<line x1="${connW/2}" y1="${s1}" x2="${connW/2}" y2="${s2}" stroke="${color}" stroke-width="1.5"/>`;
-    }
+    const color='rgba(34,211,238,0.25)';
+    // Line from match1 right → midpoint
+    paths+=`<line x1="0" y1="${src1}" x2="${connW/2}" y2="${src1}" stroke="${color}" stroke-width="1.5"/>`;
+    // Line from match2 right → midpoint
+    if(src2!==src1) paths+=`<line x1="0" y1="${src2}" x2="${connW/2}" y2="${src2}" stroke="${color}" stroke-width="1.5"/>`;
+    // Vertical bar connecting them
+    if(src2!==src1) paths+=`<line x1="${connW/2}" y1="${src1}" x2="${connW/2}" y2="${src2}" stroke="${color}" stroke-width="1.5"/>`;
+    // Line from midpoint to next round
     paths+=`<line x1="${connW/2}" y1="${mid}" x2="${connW}" y2="${dst}" stroke="${color}" stroke-width="1.5"/>`;
   }
-  const totalH=svgH+hdr;
-  const g=hdr?`<g transform="translate(0,${hdr})">${paths}</g>`:paths;
-  return `<svg width="${connW}" height="${totalH}" style="overflow:visible;display:block;flex-shrink:0" viewBox="0 0 ${connW} ${totalH}">${g}</svg>`;
+
+  return `<svg width="${connW}" height="${svgH}" class="vb-svg" viewBox="0 0 ${connW} ${svgH}">${paths}</svg>`;
 }
 
-
+/* ── Double Elimination – dispatcher ── */
 function buildDEBracketHTML(t,b){
   if(!b.wb||!b.wb.length) return '<div class="empty"><div class="empty-ico">🏆</div><div class="empty-t">No rounds yet</div></div>';
   if(t.teams.length===3) return build3TeamBracketHTML(t,b);
@@ -1518,147 +1532,299 @@ function buildDEBracketHTML(t,b){
 /* ── 3-team screenshot-style 3-column layout ── */
 function build3TeamBracketHTML(t,b){
   const ubMatch=b.wb[0]?.matches[0]||null;
+  const lbMatch=b.lb?.[0]?.matches[0]||null;
   const gfMatch=b.gf?.matches[0]||null;
   const gfrMatch=b.gfReset?.matches[0]||null;
-  const showReset=gfrMatch&&gfrMatch.team1&&gfrMatch.team2;
-  const activeGF=showReset?gfrMatch:gfMatch;
   const champ=b.champion?getTeamFrom(t,b.champion):null;
-  const byeTeam=t.teams[0]||null;
-  const LC='rgba(245,200,66,0.4)';
+  const eliminated=t.teams.filter(tm=>tm.losses>=2);
 
-  let banner='';
-  for(const m of [ubMatch,activeGF].filter(Boolean)){
+  function sectionBadge(label,col,bg,border){
+    return `<div style="display:inline-flex;align-items:center;gap:5px;font-family:'Orbitron',monospace;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:${col};background:${bg};border:1px solid ${border};border-radius:20px;padding:4px 12px;white-space:nowrap">${label}</div>`;
+  }
+  function elimCard(team){
+    const col=team?.color||'var(--red)';
+    return `<div style="background:rgba(244,63,94,0.07);border:1px solid rgba(244,63,94,0.28);border-radius:10px;padding:10px 14px;margin-top:10px;display:flex;align-items:center;gap:10px">
+      <div style="width:28px;height:28px;border-radius:7px;background:${col}22;display:flex;align-items:center;justify-content:center;font-size:13px">${team?.emoji||'👾'}</div>
+      <div style="font-size:13px;font-weight:800;color:${col};flex:1">${team?.name||'?'}</div>
+      <div style="font-size:9px;font-weight:800;color:var(--red);background:rgba(244,63,94,0.12);border:1px solid rgba(244,63,94,0.3);border-radius:4px;padding:2px 7px;letter-spacing:.5px">ELIMINATED</div>
+    </div>`;
+  }
+  function gfCard(m){
+    const showReset=gfrMatch&&gfrMatch.team1&&gfrMatch.team2;
+    const activeMatch=showReset?gfrMatch:m;
+    const activeDone=activeMatch?.status==='done';
+    const aTA=activeMatch?.team1?getTeamFrom(t,activeMatch.team1):null;
+    const aTB=activeMatch?.team2?getTeamFrom(t,activeMatch.team2):null;
+    const w=activeMatch?.winner;
+    const ubWinner=b.wb?.[b.wb.length-1]?.matches?.[0]?.winner;
+    const ubTeam=ubWinner?getTeamFrom(t,ubWinner):null;
+    function teamRow(team,teamId,score,isUB){
+      const isW=activeDone&&w===teamId;
+      const isL=activeDone&&w!==null&&w!==teamId;
+      const col=team?.color||'var(--muted)';
+      const tagCol=isUB?'var(--blue)':'var(--red)';
+      const tagBg=isUB?'rgba(34,211,238,0.12)':'rgba(244,63,94,0.12)';
+      const tagBord=isUB?'rgba(34,211,238,0.3)':'rgba(244,63,94,0.3)';
+      return `<div style="display:flex;align-items:center;padding:10px 10px;border-top:1px solid rgba(255,255,255,0.05);${isW?'background:rgba(245,200,66,0.05)':''}${isL?';opacity:.35':''}">
+        <div style="width:4px;align-self:stretch;background:${col}${isW?'':'55'};margin-right:8px"></div>
+        <div style="font-size:9px;font-weight:800;color:${tagCol};background:${tagBg};border:1px solid ${tagBord};border-radius:4px;padding:1px 5px;margin-right:8px;white-space:nowrap">${isUB?'UB':'LB'}</div>
+        <div style="font-size:13px;font-weight:800;flex:1;color:${isW?col:'var(--text)'}">${team?team.name:'WAITING'}</div>
+        <div style="font-family:'Orbitron',monospace;font-size:17px;font-weight:900;min-width:24px;text-align:center;color:${isW?'var(--gold)':'var(--muted)'}">${score!==null&&score!==undefined?score:'—'}</div>
+        <div style="width:18px;text-align:center;font-size:12px;color:var(--gold)">${isW?'★':''}</div>
+      </div>`;
+    }
+    const isUBTeam1=aTA&&ubTeam&&aTA.id===ubTeam.id;
+    const hdr=`<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 12px;background:rgba(0,0,0,0.5);border-bottom:1px solid rgba(255,255,255,0.05)">
+      <span style="font-family:'Orbitron',monospace;font-size:8px;color:var(--muted);letter-spacing:1px">M${activeMatch?.id||'?'}</span>
+      <div style="font-size:8px;font-weight:800;color:var(--gold);background:rgba(245,200,66,0.14);border:1px solid rgba(245,200,66,0.35);border-radius:4px;padding:2px 7px">${showReset?'GF RESET':'🏆 GRAND FINAL'}</div>
+      ${activeMatch?.format?`<span style="font-family:'Orbitron',monospace;font-size:8px;color:var(--gold);opacity:.8">${activeMatch.format}</span>`:''}
+    </div>`;
+    const resetRule=!showReset&&!champ
+      ?`<div style="padding:10px 12px;font-size:10px;color:var(--muted2);line-height:1.6;border-top:1px solid rgba(255,255,255,0.05);background:rgba(0,0,0,0.2)"><b style="color:var(--gold)">GF Reset rule:</b> if the LB team (${aTB?.name||'LB team'}) wins, a reset match is played. The UB team (${aTA?.name||'UB team'}) has bracket advantage.</div>`
+      :champ?`<div style="padding:10px 12px;font-size:10px;color:var(--gold);line-height:1.6;border-top:1px solid rgba(255,255,255,0.05);text-align:center;font-weight:800">🏆 ${champ.name} is the Champion!</div>`:'';
+    return `<div style="background:#0b1220;border:2px solid rgba(245,200,66,0.65);border-radius:10px;overflow:hidden;box-shadow:0 0 24px rgba(245,200,66,0.06)">${hdr}${teamRow(aTA,activeMatch?.team1,activeMatch?.score1,isUBTeam1)}${teamRow(aTB,activeMatch?.team2,activeMatch?.score2,!isUBTeam1)}${resetRule}</div>`;
+  }
+
+  // Top banner (live or next match)
+  let topBanner='';
+  for(const m of [ubMatch,lbMatch,gfMatch,gfrMatch].filter(Boolean)){
     if(m.status==='live'){
       const ta=m.team1?getTeamFrom(t,m.team1):null,tb=m.team2?getTeamFrom(t,m.team2):null;
-      if(ta&&tb){banner=`<div style="display:inline-flex;align-items:center;gap:10px;background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.4);border-radius:12px;padding:10px 18px;margin-bottom:14px;flex-wrap:wrap"><div style="display:flex;align-items:center;gap:5px"><div style="width:7px;height:7px;border-radius:50%;background:var(--red);animation:pulse-dot .9s infinite"></div><span style="font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:var(--red);letter-spacing:1.5px">LIVE NOW</span></div><div style="font-size:12px;font-weight:800"><span style="color:${ta.color||'var(--text)'}">${ta.name}</span><span style="color:var(--muted);margin:0 8px">VS</span><span style="color:${tb.color||'var(--text)'}">${tb.name}</span></div><div style="font-size:10px;color:var(--muted2)">M${m.id}${m.format?' '+m.format:''}</div></div>`;break;}
+      if(ta&&tb){ topBanner=`<div style="display:inline-flex;align-items:center;gap:10px;background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.4);border-radius:12px;padding:10px 18px;margin-bottom:14px;flex-wrap:wrap"><div style="display:flex;align-items:center;gap:5px"><div style="width:7px;height:7px;border-radius:50%;background:var(--red);animation:pulse-dot .9s infinite"></div><span style="font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:var(--red);letter-spacing:1.5px">LIVE NOW</span></div><div style="font-size:12px;font-weight:800"><span style="color:${ta.color||'var(--text)'}">${ta.name}</span><span style="color:var(--muted);margin:0 8px">VS</span><span style="color:${tb.color||'var(--text)'}">${tb.name}</span></div><div style="font-size:10px;color:var(--muted2)">· M${m.id}${m.format?' · '+m.format:''}</div></div>`; break; }
     }
   }
-  if(!banner){
-    for(const m of [ubMatch,activeGF].filter(Boolean)){
+  if(!topBanner){
+    for(const m of [ubMatch,lbMatch,gfMatch,gfrMatch].filter(Boolean)){
       if(m.status!=='done'){
         const ta=m.team1?getTeamFrom(t,m.team1):null,tb=m.team2?getTeamFrom(t,m.team2):null;
-        if(ta&&tb){banner=`<div style="display:inline-flex;align-items:center;gap:10px;background:rgba(34,211,238,0.06);border:1px solid rgba(34,211,238,0.2);border-radius:12px;padding:10px 18px;margin-bottom:14px;flex-wrap:wrap"><span style="font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:var(--blue);letter-spacing:1.5px">NEXT MATCH</span><div style="font-size:12px;font-weight:800"><span style="color:${ta.color||'var(--text)'}">${ta.name}</span><span style="color:var(--muted);margin:0 8px">VS</span><span style="color:${tb.color||'var(--text)'}">${tb.name}</span></div><div style="font-size:10px;color:var(--muted2)">M${m.id}${m.format?' '+m.format:''}</div></div>`;break;}
+        if(ta&&tb){ topBanner=`<div style="display:inline-flex;align-items:center;gap:10px;background:rgba(34,211,238,0.06);border:1px solid rgba(34,211,238,0.2);border-radius:12px;padding:10px 18px;margin-bottom:14px;flex-wrap:wrap"><span style="font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:var(--blue);letter-spacing:1.5px">⚔ NEXT MATCH</span><div style="font-size:12px;font-weight:800"><span style="color:${ta.color||'var(--text)'}">${ta.name}</span><span style="color:var(--muted);margin:0 8px">VS</span><span style="color:${tb.color||'var(--text)'}">${tb.name}</span></div><div style="font-size:10px;color:var(--muted2)">· M${m.id}${m.format?' · '+m.format:''}</div></div>`; break; }
       }
     }
   }
 
-  function colHdr(text,col,bord){
-    return `<div style="font-family:'Orbitron',monospace;font-size:9px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:${col};text-align:center;padding:5px 0 9px;border-bottom:1px solid ${bord};margin-bottom:10px">${text}</div>`;
-  }
+  function colHdr(text,col){ return `<div style="font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:${col};letter-spacing:1.8px;text-transform:uppercase;text-align:center;padding-bottom:10px">${text}</div>`; }
 
-  function byeCard(team){
-    if(!team) return '';
-    const seed=t.teams.findIndex(x=>x.id===team.id)+1;
-    const col=team.color||'var(--purple)';
-    return `<div class="vm" style="border-color:rgba(139,92,246,0.35)"><div class="vm-hdr"><span class="vm-id">BYE</span><div class="vm-badge" style="color:var(--purple);background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.3);animation:champ-glow 2.5s ease-in-out infinite">WAITING</div></div><div class="vt" style="background:rgba(139,92,246,0.05)"><div class="vt-bar" style="background:rgba(139,92,246,0.55)"></div><div class="vt-seed" style="background:${col}22;color:${col};font-size:9px;font-weight:900">${seed}</div><div class="vt-name" style="color:${col}">${team.name}</div><div style="font-size:9px;font-weight:800;color:var(--purple);opacity:.7;flex-shrink:0;padding:0 4px 0 6px;white-space:nowrap">GF</div></div></div>`;
-  }
+  const ubCol=`<div style="flex-shrink:0;width:240px">${colHdr('UB Round 1','var(--muted2)')}${ubMatch?buildVisualMatchCard(t,ubMatch,false):''}</div>`;
+  const dropConn=`<div style="display:flex;flex-direction:column;align-items:center;width:48px;flex-shrink:0;padding-top:20px"><div style="font-size:9px;font-weight:700;color:var(--red);white-space:nowrap;letter-spacing:.5px;margin-bottom:2px">↓ drops</div><svg width="32" height="60" style="overflow:visible"><line x1="16" y1="0" x2="16" y2="52" stroke="rgba(244,63,94,0.4)" stroke-width="1.5" stroke-dasharray="4 3"/></svg></div>`;
+  const lbCol=`<div style="flex-shrink:0;width:240px">${colHdr('Lower Bracket','var(--muted2)')}${lbMatch?buildVisualMatchCard(t,lbMatch,false):''}${eliminated.length?elimCard(eliminated[0]):''}</div>`;
+  const gfConn=`<div style="display:flex;align-items:center;justify-content:center;width:48px;flex-shrink:0;padding-top:${10+44}px"><div style="display:flex;flex-direction:column;align-items:center;gap:1px"><svg width="32" height="14" style="overflow:visible;display:block"><defs><marker id="arr5t" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="rgba(245,200,66,0.5)" stroke-width="1.5" stroke-linecap="round"/></marker></defs><line x1="0" y1="7" x2="28" y2="7" stroke="rgba(245,200,66,0.5)" stroke-width="1.5" marker-end="url(#arr5t)"/></svg><div style="font-size:9px;font-weight:700;color:rgba(245,200,66,0.6);white-space:nowrap;letter-spacing:.5px">→ GF</div></div></div>`;
+  const gfCol=`<div style="flex-shrink:0;width:260px">${colHdr('Grand Final','var(--gold)')}${gfCard(gfMatch)}</div>`;
+  const badges=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap">${sectionBadge('⬆ Upper Bracket','var(--blue)','rgba(34,211,238,0.08)','rgba(34,211,238,0.22)')}${sectionBadge('⬇ Lower Bracket','var(--red)','rgba(244,63,94,0.08)','rgba(244,63,94,0.22)')}${sectionBadge('🏆 Grand Final','var(--gold)','rgba(245,200,66,0.08)','rgba(245,200,66,0.28)')}</div>`;
+  const champBox=champ?`<div style="margin-top:20px;display:flex;justify-content:center"><div class="vchamp"><div class="vchamp-trophy">🏆</div><div class="vchamp-name" style="color:${champ.color||'var(--gold)'}">${champ.name}</div><div class="vchamp-lbl">CHAMPION</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Season 2025</div></div></div>`:'';
 
-  const HDR=32,CARD_H=88,GAP=14;
-  const byeH=HDR+38;
-  const matchH=HDR+76;
-  const r1H=byeH+GAP+matchH;
-  const byeCY=byeH/2;
-  const ubCY=byeH+GAP+matchH/2;
-  const midY=(byeCY+ubCY)/2;
-  const svgH=r1H+10;
-  const CW=36;
-
-  const connSVG=`<svg width="${CW}" height="${svgH+HDR}" style="overflow:visible;display:block;flex-shrink:0" viewBox="0 0 ${CW} ${svgH+HDR}">
-    <g transform="translate(0,${HDR})">
-      <line x1="0" y1="${byeCY}" x2="${CW/2}" y2="${byeCY}" stroke="${LC}" stroke-width="1.5"/>
-      <line x1="${CW/2}" y1="${byeCY}" x2="${CW/2}" y2="${ubCY}" stroke="${LC}" stroke-width="1.5"/>
-      <line x1="0" y1="${ubCY}" x2="${CW/2}" y2="${ubCY}" stroke="${LC}" stroke-width="1.5"/>
-      <line x1="${CW/2}" y1="${midY}" x2="${CW}" y2="${midY}" stroke="${LC}" stroke-width="1.5"/>
-    </g>
-  </svg>`;
-
-  const gfPadTop=Math.max(0,Math.round((r1H-matchH)/2));
-  const arrowY=HDR+gfPadTop+matchH/2;
-  const arrowH=HDR+gfPadTop+matchH+10;
-  const arrowSVG=`<svg width="36" height="${arrowH}" style="overflow:visible;display:block;flex-shrink:0;align-self:flex-start"><line x1="0" y1="${arrowY}" x2="36" y2="${arrowY}" stroke="${champ?'var(--gold)':'rgba(255,255,255,0.08)'}" stroke-width="1.5"/></svg>`;
-
-  let gfHTML='';
-  if(activeGF) gfHTML=buildVisualMatchCard(t,activeGF,true);
-  else gfHTML=`<div class="vm vm-gf"><div class="vm-hdr"><span class="vm-id">GF</span><div class="vm-badge vm-pending-badge">UPCOMING</div></div><div class="vt vt-tbd"><div class="vt-bar" style="background:rgba(139,92,246,0.35)"></div><div class="vt-seed" style="background:rgba(139,92,246,0.12);color:var(--purple)">-</div><div class="vt-name" style="color:var(--purple)">WAITING</div></div><div class="vt vt-tbd"><div class="vt-bar" style="background:rgba(139,92,246,0.35)"></div><div class="vt-seed" style="background:rgba(139,92,246,0.12);color:var(--purple)">-</div><div class="vt-name" style="color:var(--purple)">WAITING</div></div></div>`;
-
-  const champHTML=champ
-    ?`<div class="vchamp"><div class="vchamp-trophy">&#127942;</div><div class="vchamp-name" style="color:${champ.color||'var(--gold)'}">${champ.name}</div><div class="vchamp-lbl">CHAMPION</div></div>`
-    :`<div class="vchamp"><div class="vchamp-trophy">&#127942;</div><div class="vchamp-name">TBD</div><div class="vchamp-lbl">CHAMPION</div></div>`;
-
-  return `<div>
-    ${banner}
-    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:12px">
-      <div style="display:inline-flex;align-items:flex-start;gap:0;min-width:max-content;padding:4px 8px 12px">
-        <div style="display:flex;flex-direction:column;width:240px;flex-shrink:0">
-          ${colHdr('ROUND 1','var(--muted2)','rgba(255,255,255,0.06)')}
-          <div style="display:flex;flex-direction:column;gap:${GAP}px">
-            ${byeCard(byeTeam)}
-            ${ubMatch?buildVisualMatchCard(t,ubMatch,false):''}
-          </div>
-        </div>
-        ${connSVG}
-        <div style="display:flex;flex-direction:column;width:240px;flex-shrink:0">
-          ${colHdr(showReset?'GF RESET':'GRAND FINAL','var(--gold)','rgba(245,200,66,0.18)')}
-          <div style="padding-top:${gfPadTop}px">${gfHTML}</div>
-        </div>
-        ${arrowSVG}
-        <div style="padding-top:${HDR}px">${champHTML}</div>
-      </div>
-    </div>
-  </div>`;
+  return `<div>${topBanner}${badges}<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:12px"><div style="display:inline-flex;align-items:flex-start;gap:0;min-width:max-content">${ubCol}${dropConn}${lbCol}${gfConn}${gfCol}</div></div>${champBox}</div>`;
 }
 
+function buildFullHorizontalBracket(t,rounds,champ,b){
+  const CARD_H=88, GAP=14, CONN_W=32;
+  const sectionColor={ub:'rgba(34,211,238,0.3)',lb:'rgba(244,63,94,0.3)',gf:'rgba(245,200,66,0.5)',gfr:'rgba(245,200,66,0.3)'};
+  const sectionLabels={ub:'⬆ Upper Bracket',lb:'⬇ Lower Bracket',gf:'🏆 Grand Final',gfr:'GF Reset'};
+  const sectionColors={ub:'var(--blue)',lb:'var(--red)',gf:'var(--gold)',gfr:'var(--gold)'};
+  const sectionBgs={ub:'rgba(34,211,238,0.08)',lb:'rgba(244,63,94,0.08)',gf:'rgba(245,200,66,0.08)',gfr:'rgba(245,200,66,0.06)'};
+  const sectionBords={ub:'rgba(34,211,238,0.22)',lb:'rgba(244,63,94,0.22)',gf:'rgba(245,200,66,0.28)',gfr:'rgba(245,200,66,0.18)'};
 
-function buildFul
-  const LC='rgba(245,200,66,0.4)';
-  html+=`<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:12px">`;
-  html+=`<div style="display:inline-flex;align-items:flex-start;padding:4px 8px 12px;min-width:max-content;gap:0">`;
-  rounds.forEach((round,ri)=>{
-    const isGF=round.section==='gf'||round.section==='gfr';
-    const hdrCol=isGF?'var(--gold)':sectionColors[round.section]||'var(--muted2)';
-    const hdrBord=isGF?'rgba(245,200,66,0.18)':'rgba(255,255,255,0.06)';
-    const cnt=round.matches.length;
-    html+=`<div style="display:flex;flex-direction:column;width:240px;flex-shrink:0">`;
-    html+=`<div style="font-family:'Orbitron',monospace;font-size:9px;font-weight:900;letter-spacing:2.5px;text-transform:uppercase;color:${hdrCol};text-align:center;padding:5px 0 9px;border-bottom:1px solid ${hdrBord};margin-bottom:10px">${round.name.toUpperCase()}</div>`;
-    html+=`<div style="display:flex;flex-direction:column;gap:${GAP}px">`;
-    round.matches.forEach(m=>{ html+=buildVisualMatchCard(t,m,isGF); });
-    html+=`</div></div>`;
-    if(ri<rounds.length-1){
-      const nxt=rounds[ri+1].matches.length;
-      const curH=cnt*CARD_H+(cnt-1)*GAP;
-      const nxtH=nxt*CARD_H+(nxt-1)*GAP;
-      const svgH=Math.max(curH,nxtH,CARD_H)+20;
-      const HDR=32;
-      const fY=[],tY=[];
-      for(let i=0;i<cnt;i++) fY.push((svgH-curH)/2+i*(CARD_H+GAP)+CARD_H/2);
-      for(let i=0;i<nxt;i++) tY.push((svgH-nxtH)/2+i*(CARD_H+GAP)+CARD_H/2);
-      let paths='';
-      for(let j=0;j<nxt;j++){
-        const s1=fY[j*2]??fY[fY.length-1];
-        const s2=fY[j*2+1]??s1;
-        const mid=(s1+s2)/2;
-        const dst=tY[j];
-        paths+=`<line x1="0" y1="${s1}" x2="${CONN_W/2}" y2="${s1}" stroke="${LC}" stroke-width="1.5"/>`;
-        if(s2!==s1){
-          paths+=`<line x1="0" y1="${s2}" x2="${CONN_W/2}" y2="${s2}" stroke="${LC}" stroke-width="1.5"/>`;
-          paths+=`<line x1="${CONN_W/2}" y1="${s1}" x2="${CONN_W/2}" y2="${s2}" stroke="${LC}" stroke-width="1.5"/>`;
-        }
-        paths+=`<line x1="${CONN_W/2}" y1="${mid}" x2="${CONN_W}" y2="${dst}" stroke="${LC}" stroke-width="1.5"/>`;
+  // ── Compute "next match" info for each team ──
+  // Walk all rounds in order; for each round, if a match has a determined team but no result yet,
+  // that match is the team's "next" match. Build a map: teamId → {vsTeam, roundName, matchId}
+  const nextMatchMap={};
+  rounds.forEach(round=>{
+    round.matches.forEach(m=>{
+      if(m.status==='done') return; // already played
+      const t1=m.team1?getTeamFrom(t,m.team1):null;
+      const t2=m.team2?getTeamFrom(t,m.team2):null;
+      if(t1&&t2){
+        // Both known: this is the next match for both
+        if(!nextMatchMap[m.team1]) nextMatchMap[m.team1]={vsTeam:t2,vsId:m.team2,roundName:round.name,matchId:m.id};
+        if(!nextMatchMap[m.team2]) nextMatchMap[m.team2]={vsTeam:t1,vsId:m.team1,roundName:round.name,matchId:m.id};
       }
-      if(cnt===nxt&&cnt===1) paths=`<line x1="0" y1="${svgH/2}" x2="${CONN_W}" y2="${svgH/2}" stroke="${LC}" stroke-width="1.5"/>`;
-      html+=`<svg width="${CONN_W}" height="${svgH+HDR}" style="overflow:visible;display:block;flex-shrink:0" viewBox="0 0 ${CONN_W} ${svgH+HDR}"><g transform="translate(0,${HDR})">${paths}</g></svg>`;
+    });
+  });
+
+  // ── Collect all unique teams that appear in any match ──
+  const seenTeamIds=new Set();
+  rounds.forEach(r=>r.matches.forEach(m=>{
+    if(m.team1) seenTeamIds.add(m.team1);
+    if(m.team2) seenTeamIds.add(m.team2);
+  }));
+
+  // ── Find eliminated teams (lost in LB or LB R1) ──
+  const eliminatedIds=new Set();
+  if(b&&b.lb){
+    b.lb.forEach(r=>{
+      r.matches.forEach(m=>{
+        if(m.status==='done'&&m.winner&&m.team1&&m.team2){
+          const loserId=m.team1===m.winner?m.team2:m.team1;
+          // Only truly eliminated if they don't appear in a later round
+          let appearsLater=false;
+          rounds.forEach(r2=>{
+            r2.matches.forEach(m2=>{
+              if(m2.id!==m.id&&(m2.team1===loserId||m2.team2===loserId)) appearsLater=true;
+            });
+          });
+          if(!appearsLater) eliminatedIds.add(loserId);
+        }
+      });
+    });
+    // LB R1 losers (drop from WB) already get their drop handled by advanceDE; anyone with 2 losses is out
+  }
+  // Also check: a team that lost in LB is eliminated
+  t.teams.forEach(tm=>{
+    if(tm.losses>=2) eliminatedIds.add(tm.id);
+  });
+
+  // ── Next Match Banner ──
+  // Find the first upcoming match (status != done) that has both teams known
+  let nextMatchBanner='';
+  for(let ri=0;ri<rounds.length;ri++){
+    const r=rounds[ri];
+    for(let mi=0;mi<r.matches.length;mi++){
+      const m=r.matches[mi];
+      if(m.status!=='done'&&m.status!=='live'){
+        const ta=m.team1?getTeamFrom(t,m.team1):null;
+        const tb=m.team2?getTeamFrom(t,m.team2):null;
+        if(ta&&tb){
+          const sc=sectionColors[r.section]||'var(--blue)';
+          const sg=sectionBgs[r.section]||'rgba(34,211,238,0.08)';
+          const sb=sectionBords[r.section]||'rgba(34,211,238,0.22)';
+          nextMatchBanner=`<div style="display:inline-flex;align-items:center;gap:10px;
+            background:${sg};border:1px solid ${sb};border-radius:12px;padding:10px 18px;
+            margin-bottom:14px;flex-wrap:wrap;max-width:100%">
+            <div style="font-family:'Orbitron',monospace;font-size:9px;font-weight:700;
+              color:${sc};letter-spacing:1.5px;text-transform:uppercase;white-space:nowrap">⚔ NEXT MATCH</div>
+            <div style="width:1px;height:22px;background:${sb}"></div>
+            <div style="font-size:12px;font-weight:800;white-space:nowrap">
+              <span style="color:${ta.color||'var(--text)'}">${ta.name}</span>
+              <span style="color:var(--muted);margin:0 8px;font-size:11px">VS</span>
+              <span style="color:${tb.color||'var(--text)'}">${tb.name}</span>
+            </div>
+            <div style="font-size:10px;color:var(--muted2);white-space:nowrap">· ${r.name} · M${m.id}</div>
+          </div>`;
+          break;
+        }
+      }
+    }
+    if(nextMatchBanner) break;
+  }
+
+  // ── LIVE match banner ──
+  let liveBanner='';
+  rounds.forEach(r=>{
+    r.matches.forEach(m=>{
+      if(m.status==='live'){
+        const ta=m.team1?getTeamFrom(t,m.team1):null;
+        const tb=m.team2?getTeamFrom(t,m.team2):null;
+        if(ta&&tb&&!liveBanner){
+          liveBanner=`<div style="display:inline-flex;align-items:center;gap:10px;
+            background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.4);border-radius:12px;
+            padding:10px 18px;margin-bottom:14px;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:6px">
+              <div style="width:7px;height:7px;border-radius:50%;background:var(--red);animation:pulse-dot .9s infinite"></div>
+              <div style="font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:var(--red);letter-spacing:1.5px">LIVE NOW</div>
+            </div>
+            <div style="width:1px;height:22px;background:rgba(244,63,94,0.3)"></div>
+            <div style="font-size:12px;font-weight:800;white-space:nowrap">
+              <span style="color:${ta.color||'var(--text)'}">${ta.name}</span>
+              <span style="color:var(--muted);margin:0 8px;font-size:11px">VS</span>
+              <span style="color:${tb.color||'var(--text)'}">${tb.name}</span>
+            </div>
+            <div style="font-size:10px;color:var(--muted2)">· ${r.name} · M${m.id}</div>
+          </div>`;
+        }
+      }
+    });
+  });
+
+  let html=`<div>`;
+  if(liveBanner) html+=liveBanner;
+  else if(nextMatchBanner) html+=nextMatchBanner;
+
+  html+=`<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:12px">`;
+
+  // ── Section badges row ──
+  html+=`<div style="display:inline-flex;align-items:center;gap:6px;padding:0 8px 10px;min-width:max-content;flex-wrap:wrap">`;
+  const seenSec=new Set();
+  rounds.forEach(r=>{
+    if(!seenSec.has(r.section)){
+      seenSec.add(r.section);
+      html+=`<div style="font-family:'Orbitron',monospace;font-size:9px;font-weight:700;letter-spacing:1.8px;
+        text-transform:uppercase;color:${sectionColors[r.section]};background:${sectionBgs[r.section]};
+        border:1px solid ${sectionBords[r.section]};border-radius:20px;padding:4px 12px;white-space:nowrap">
+        ${sectionLabels[r.section]||r.section}</div>`;
     }
   });
-  const HDR2=32;
-  const cCol2=champ?'var(--gold)':'rgba(255,255,255,0.08)';
-  html+=`<svg width="${CONN_W}" height="${CARD_H+20+HDR2}" style="overflow:visible;display:block;flex-shrink:0;align-self:flex-start"><line x1="0" y1="${HDR2+(CARD_H+20)/2}" x2="${CONN_W}" y2="${HDR2+(CARD_H+20)/2}" stroke="${cCol2}" stroke-width="1.5"/></svg>`;
-  html+=`<div style="display:flex;align-items:flex-start;padding-top:${HDR2}px">`;
-  html+=champ
-    ?`<div class="vchamp"><div class="vchamp-trophy">&#127942;</div><div class="vchamp-name" style="color:${champ.color||'var(--gold)'}">${champ.name}</div><div class="vchamp-lbl">CHAMPION</div></div>`
-    :`<div class="vchamp"><div class="vchamp-trophy">&#127942;</div><div class="vchamp-name">TBD</div><div class="vchamp-lbl">CHAMPION</div></div>`;
   html+=`</div>`;
+
+  // ── Round labels row ──
+  html+=`<div style="display:inline-flex;align-items:flex-start;gap:0;padding:0 8px;min-width:max-content">`;
+  rounds.forEach((r,ri)=>{
+    html+=`<div style="width:240px;text-align:center;font-family:'Orbitron',monospace;font-size:10px;
+      font-weight:700;color:var(--muted2);letter-spacing:1.8px;text-transform:uppercase;padding-bottom:8px">
+      ${r.name.toUpperCase()}</div>`;
+    if(ri<rounds.length-1) html+=`<div style="width:${CONN_W}px"></div>`;
+  });
+  html+=`<div style="width:${CONN_W}px"></div>`;
+  html+=`<div style="width:130px;text-align:center;font-family:'Orbitron',monospace;font-size:8px;
+    font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase;padding-bottom:8px">CHAMPION</div>`;
   html+=`</div>`;
+
+  // ── Cards row – all vertically centered ──
+  html+=`<div style="display:inline-flex;align-items:center;padding:0 8px;min-width:max-content;gap:0">`;
+
+  rounds.forEach((round,ri)=>{
+    const isGF=round.section==='gf'||round.section==='gfr';
+    const connColor=sectionColor[round.section]||'rgba(34,211,238,0.25)';
+    const cnt=round.matches.length;
+
+    html+=`<div style="display:flex;flex-direction:column;width:240px;gap:${GAP}px;align-self:center">`;
+    round.matches.forEach(m=>{ html+=buildVisualMatchCard(t,m,isGF); });
+    html+=`</div>`;
+
+    if(ri<rounds.length-1){
+      const nextCnt=rounds[ri+1].matches.length;
+      const curTotalH=cnt*CARD_H+(cnt-1)*GAP;
+      const nextTotalH=nextCnt*CARD_H+(nextCnt-1)*GAP;
+      const svgH=Math.max(curTotalH,nextTotalH,CARD_H)+20;
+      // from-Y centers on current column, to-Y centers on next column
+      const fromYArr=[],toYArr=[];
+      for(let i=0;i<cnt;i++) fromYArr.push((svgH-curTotalH)/2+i*(CARD_H+GAP)+CARD_H/2);
+      for(let i=0;i<nextCnt;i++) toYArr.push((svgH-nextTotalH)/2+i*(CARD_H+GAP)+CARD_H/2);
+      let paths='';
+      // Draw lines: pair up fromY → toY (many-to-one or one-to-one)
+      for(let j=0;j<nextCnt;j++){
+        const s1=fromYArr[j*2]??fromYArr[fromYArr.length-1];
+        const s2=fromYArr[j*2+1]??s1;
+        const mid=(s1+s2)/2;
+        const dst=toYArr[j];
+        paths+=`<line x1="0" y1="${s1}" x2="${CONN_W/2}" y2="${s1}" stroke="${connColor}" stroke-width="1.5"/>`;
+        if(s2!==s1){
+          paths+=`<line x1="0" y1="${s2}" x2="${CONN_W/2}" y2="${s2}" stroke="${connColor}" stroke-width="1.5"/>`;
+          paths+=`<line x1="${CONN_W/2}" y1="${s1}" x2="${CONN_W/2}" y2="${s2}" stroke="${connColor}" stroke-width="1.5"/>`;
+        }
+        paths+=`<line x1="${CONN_W/2}" y1="${mid}" x2="${CONN_W}" y2="${dst}" stroke="${connColor}" stroke-width="1.5"/>`;
+      }
+      // simple passthrough lines for rounds that don't reduce (e.g. 1→1)
+      if(cnt===nextCnt&&cnt===1){
+        paths=`<line x1="0" y1="${svgH/2}" x2="${CONN_W}" y2="${svgH/2}" stroke="${connColor}" stroke-width="1.5"/>`;
+      }
+      html+=`<svg width="${CONN_W}" height="${svgH}" style="overflow:visible;display:block;align-self:center">${paths}</svg>`;
+    }
+  });
+
+  // ── Final connector → champion ──
+  const champColor=champ?'var(--gold)':'rgba(255,255,255,0.1)';
+  html+=`<svg width="${CONN_W}" height="${CARD_H+20}" style="overflow:visible;display:block;align-self:center">
+    <line x1="0" y1="${(CARD_H+20)/2}" x2="${CONN_W}" y2="${(CARD_H+20)/2}" stroke="${champColor}" stroke-width="1.5"/>
+  </svg>`;
+
+  html+=`<div style="display:flex;align-items:center;align-self:center">`;
+  if(champ){
+    html+=`<div class="vchamp"><div class="vchamp-trophy">🏆</div><div class="vchamp-name" style="color:${champ.color||'var(--gold)'}">${champ.name}</div><div class="vchamp-lbl">CHAMPION</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Season 2025</div></div>`;
+  } else {
+    html+=`<div class="vchamp"><div class="vchamp-trophy">🏆</div><div class="vchamp-name">TBD</div><div class="vchamp-lbl">CHAMPION</div><div style="font-size:10px;color:var(--muted);margin-top:4px">Season 2025</div></div>`;
+  }
   html+=`</div>`;
+  html+=`</div>`; // cards row
+  html+=`</div>`; // overflow wrapper
 
   // ── "What's Next" section per team ──
   const activeTeams=t.teams.filter(tm=>!eliminatedIds.has(tm.id)&&seenTeamIds.has(tm.id));
@@ -2125,25 +2291,21 @@ function renderStandings(){
 function setView(v){
   document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el.dataset.view===v));
-  const vEl=document.getElementById('view-'+v);
+  var vEl=document.getElementById('view-'+v);
   if(vEl) vEl.classList.add('active');
-  // Re-render the selected view
+  closeTourneySwitch();
   if(v==='teams') renderTeams();
   else if(v==='schedule') renderSchedule();
   else if(v==='standings') renderStandings();
-  else if(v==='bracket') renderBracketView();
-  // Close any open overlays that could block clicks
-  closeTourneySwitch();
+  else if(v==='bracket') renderAll();
 }
 
 /* ═══════════════════════════════════════════
    INIT
 ═══════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', async () => {
-  // Ensure GitHub config is saved (so token is available for saves)
-  if(!localStorage.getItem(GH_CFG_KEY)){
-    saveGHCfgLocal(GH_DEFAULTS);
-  }
+  // Pre-save default GH config if not set
+  if(!localStorage.getItem(GH_CFG_KEY)) saveGHCfgLocal(GH_DEFAULTS);
   // Load local data first (fast)
   loadLocal();
   if(!activeTourneyId){
