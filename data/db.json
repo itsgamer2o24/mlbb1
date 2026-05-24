@@ -54,11 +54,84 @@
       "players": [],
       "bracket": {
         "champion": null,
-        "rounds": []
+        "rounds": [],
+        "wb": [
+          {
+            "name": "UB Round 1",
+            "matches": [
+              {
+                "id": 1,
+                "team1": 1,
+                "team2": 2,
+                "score1": null,
+                "score2": null,
+                "winner": null,
+                "status": "upcoming",
+                "date": "TBD",
+                "time": "TBD",
+                "format": "Bo5"
+              }
+            ]
+          }
+        ],
+        "lb": [
+          {
+            "name": "LB Round 1",
+            "matches": [
+              {
+                "id": 2,
+                "team1": null,
+                "team2": 3,
+                "score1": null,
+                "score2": null,
+                "winner": null,
+                "status": "upcoming",
+                "date": "TBD",
+                "time": "TBD",
+                "format": "Bo7"
+              }
+            ],
+            "wbDropRound": 0
+          }
+        ],
+        "gf": {
+          "name": "Grand Final",
+          "matches": [
+            {
+              "id": 3,
+              "team1": null,
+              "team2": null,
+              "score1": null,
+              "score2": null,
+              "winner": null,
+              "status": "upcoming",
+              "date": "TBD",
+              "time": "TBD",
+              "format": "Bo9"
+            }
+          ]
+        },
+        "gfReset": {
+          "name": "GF Reset",
+          "matches": [
+            {
+              "id": 4,
+              "team1": null,
+              "team2": null,
+              "score1": null,
+              "score2": null,
+              "winner": null,
+              "status": "upcoming",
+              "date": "TBD",
+              "time": "TBD",
+              "format": "Bo9"
+            }
+          ]
+        }
       },
       "nextTeamId": 4,
       "nextPlayerId": 1,
-      "nextMatchId": 1,
+      "nextMatchId": 5,
       "createdAt": 1779610875457
     }
   ],
