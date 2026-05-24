@@ -117,24 +117,22 @@ a{color:inherit;text-decoration:none}
 
 /* ═══ MPL BRACKET ═══ */
 .bracket-layout{display:flex;gap:18px;align-items:flex-start}
-.bracket-main{flex:1;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.bracket-sidebar{width:264px;flex-shrink:0;position:sticky;top:74px}
 
 /* Bracket section labels */
 .bracket-section{margin-bottom:28px}
 .bracket-section-hdr{display:inline-flex;align-items:center;gap:8px;font-family:'Orbitron',monospace;
-  font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-  padding:6px 16px;border-radius:22px;margin-bottom:14px}
-.bsh-ub{color:var(--blue);background:rgba(34,211,238,0.06);border:1px solid rgba(34,211,238,0.25);letter-spacing:2.5px}
-.bsh-lb{color:var(--red);background:rgba(244,63,94,0.06);border:1px solid rgba(244,63,94,0.25);letter-spacing:2.5px}
-.bsh-gf{color:var(--gold);background:rgba(245,200,66,0.06);border:1px solid rgba(245,200,66,0.3);font-size:12px;padding:8px 20px;letter-spacing:2.5px}
+  font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  padding:8px 18px;border-radius:22px;margin-bottom:16px}
+.bsh-ub{color:var(--blue);background:rgba(34,211,238,0.07);border:1px solid rgba(34,211,238,0.28);letter-spacing:2.5px}
+.bsh-lb{color:var(--red);background:rgba(244,63,94,0.07);border:1px solid rgba(244,63,94,0.28);letter-spacing:2.5px}
+.bsh-gf{color:var(--gold);background:rgba(245,200,66,0.07);border:1px solid rgba(245,200,66,0.35);font-size:13px;padding:9px 22px;letter-spacing:2.5px}
 
 /* ═══ VISUAL BRACKET (screenshot style) ═══ */
 .vbracket-wrap{overflow-x:auto;overflow-y:visible;-webkit-overflow-scrolling:touch;padding:8px 0 16px}
 .vbracket-inner{display:inline-flex;align-items:flex-start;gap:0;min-width:max-content;padding:8px 12px}
 
 /* Round column */
-.vb-round{display:flex;flex-direction:column;align-items:stretch;flex-shrink:0;width:200px}
+.vb-round{display:flex;flex-direction:column;align-items:stretch;flex-shrink:0;width:240px}
 .vb-round-lbl{font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:var(--muted2);
   letter-spacing:2px;text-transform:uppercase;text-align:center;padding:0 0 10px;margin-bottom:0}
 
@@ -155,39 +153,39 @@ a{color:inherit;text-decoration:none}
   text-transform:uppercase;text-align:center;padding:0 0 10px}
 
 /* Match card – MPL Style */
-.vm{background:#0b1220;border:1px solid rgba(255,255,255,0.07);border-radius:6px;overflow:hidden;
-  width:100%;transition:border-color .18s;position:relative}
-.vm:hover{border-color:rgba(34,211,238,0.3);background:#0d1624}
-.vm.vm-live{border-color:rgba(244,63,94,0.55);background:rgba(12,10,18,0.98)}
-.vm.vm-done{border-color:rgba(245,200,66,0.28);background:#0c1520}
-.vm.vm-gf{border-color:rgba(245,200,66,0.55);background:#0e1828}
-.vm-hdr{display:flex;align-items:center;justify-content:space-between;padding:4px 9px;
-  background:rgba(0,0,0,0.45);gap:4px;border-bottom:1px solid rgba(255,255,255,0.04)}
-.vm-id{font-family:'Orbitron',monospace;font-size:7px;color:var(--muted);letter-spacing:.8px;text-transform:uppercase}
-.vm-badge{display:inline-flex;align-items:center;gap:3px;font-size:7px;font-weight:800;letter-spacing:.5px;
-  padding:1px 5px;border-radius:3px}
-.vm-live-badge{color:var(--red);background:rgba(244,63,94,0.12);border:1px solid rgba(244,63,94,0.3)}
-.vm-done-badge{color:var(--green);background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25)}
-.vm-pending-badge{color:var(--muted2);background:rgba(34,211,238,0.05);border:1px solid rgba(34,211,238,0.15)}
-.vm-time{font-size:7px;color:var(--gold);font-family:'Orbitron',monospace}
+.vm{background:#0b1220;border:1px solid rgba(255,255,255,0.09);border-radius:10px;overflow:hidden;
+  width:100%;transition:border-color .18s,background .18s;position:relative}
+.vm:hover{border-color:rgba(34,211,238,0.35);background:#0d1826}
+.vm.vm-live{border-color:rgba(244,63,94,0.6);background:rgba(14,10,20,0.99)}
+.vm.vm-done{border-color:rgba(245,200,66,0.32);background:#0c1622}
+.vm.vm-gf{border-color:rgba(245,200,66,0.65);background:#0e1c2e;box-shadow:0 0 24px rgba(245,200,66,0.06)}
+.vm-hdr{display:flex;align-items:center;justify-content:space-between;padding:6px 12px;
+  background:rgba(0,0,0,0.5);gap:6px;border-bottom:1px solid rgba(255,255,255,0.05)}
+.vm-id{font-family:'Orbitron',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.vm-badge{display:inline-flex;align-items:center;gap:3px;font-size:8px;font-weight:800;letter-spacing:.5px;
+  padding:2px 7px;border-radius:4px}
+.vm-live-badge{color:var(--red);background:rgba(244,63,94,0.14);border:1px solid rgba(244,63,94,0.35)}
+.vm-done-badge{color:var(--green);background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.28)}
+.vm-pending-badge{color:var(--muted2);background:rgba(34,211,238,0.06);border:1px solid rgba(34,211,238,0.18)}
+.vm-time{font-size:8px;color:var(--gold);font-family:'Orbitron',monospace}
 
 /* Team row – MPL Style */
-.vt{display:flex;align-items:center;padding:8px 9px 8px 0;border-bottom:1px solid rgba(255,255,255,0.04);
+.vt{display:flex;align-items:center;padding:11px 10px 11px 0;border-bottom:1px solid rgba(255,255,255,0.05);
   position:relative;min-width:0;gap:0;transition:background .12s}
 .vt:last-child{border-bottom:none}
-.vt.vt-w{background:rgba(245,200,66,0.04)}
+.vt.vt-w{background:rgba(245,200,66,0.05)}
 .vt.vt-l{opacity:.28}
-.vt-bar{width:3px;flex-shrink:0;align-self:stretch;border-radius:0}
-.vt-seed{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;
-  font-size:9px;font-weight:900;flex-shrink:0;margin:0 6px 0 7px;font-family:'Orbitron',monospace}
-.vt-name{font-size:11px;font-weight:800;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;letter-spacing:.2px}
-.vt-score{font-family:'Orbitron',monospace;font-size:14px;font-weight:900;min-width:20px;text-align:center;
-  padding:0 5px;flex-shrink:0}
+.vt-bar{width:4px;flex-shrink:0;align-self:stretch;border-radius:0}
+.vt-seed{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:900;flex-shrink:0;margin:0 8px 0 9px;font-family:'Orbitron',monospace}
+.vt-name{font-size:13px;font-weight:800;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;letter-spacing:.25px}
+.vt-score{font-family:'Orbitron',monospace;font-size:17px;font-weight:900;min-width:24px;text-align:center;
+  padding:0 6px;flex-shrink:0}
 .vt-score.sv-win{color:var(--gold)}
 .vt-score.sv-lose{color:var(--muted)}
-.vt-star{font-size:10px;color:var(--gold);flex-shrink:0;width:15px;text-align:center}
-.vt-live-dot{width:6px;height:6px;border-radius:50%;background:var(--red);animation:pulse-dot .9s infinite;flex-shrink:0;margin-right:5px}
-.vt-tbd .vt-name{color:var(--gold);font-style:normal;font-size:9px;font-weight:800;letter-spacing:.8px}
+.vt-star{font-size:12px;color:var(--gold);flex-shrink:0;width:18px;text-align:center}
+.vt-live-dot{width:7px;height:7px;border-radius:50%;background:var(--red);animation:pulse-dot .9s infinite;flex-shrink:0;margin-right:6px}
+.vt-tbd .vt-name{color:var(--purple);font-style:normal;font-size:10px;font-weight:800;letter-spacing:.8px}
 
 /* Visual bracket connector SVG */
 .vb-svg{overflow:visible;display:block}
@@ -196,11 +194,11 @@ a{color:inherit;text-decoration:none}
 .vb-labels{display:inline-flex;align-items:flex-start;gap:0;min-width:max-content;padding:0 12px}
 
 /* Champion card */
-.vchamp{background:#0e1828;border:2px solid var(--gold);border-radius:12px;padding:20px 14px;text-align:center;
-  min-width:120px;animation:champ-glow 3s ease-in-out infinite}
-.vchamp-trophy{font-size:32px;margin-bottom:10px}
-.vchamp-name{font-family:'Orbitron',monospace;font-size:12px;font-weight:900;color:var(--gold);margin-bottom:6px;word-break:break-word;line-height:1.3}
-.vchamp-lbl{font-family:'Orbitron',monospace;font-size:7px;color:var(--muted2);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:4px}
+.vchamp{background:#0e1828;border:2px solid var(--gold);border-radius:14px;padding:24px 18px;text-align:center;
+  min-width:140px;animation:champ-glow 3s ease-in-out infinite}
+.vchamp-trophy{font-size:40px;margin-bottom:12px}
+.vchamp-name{font-family:'Orbitron',monospace;font-size:14px;font-weight:900;color:var(--gold);margin-bottom:6px;word-break:break-word;line-height:1.3}
+.vchamp-lbl{font-family:'Orbitron',monospace;font-size:8px;color:var(--muted2);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:4px}
 
 /* Bracket rounds flow (legacy – keep for DE sections) */
 .bracket-rounds{display:flex;align-items:flex-start;gap:0;overflow-x:auto;padding:4px 0 12px;-webkit-overflow-scrolling:touch}
@@ -398,32 +396,6 @@ a{color:inherit;text-decoration:none}
 .tr-meta{font-size:11px;color:var(--muted2);display:flex;gap:10px;flex-wrap:wrap}
 .tr-actions{display:flex;gap:6px;flex-shrink:0}
 
-/* Waitlist */
-.wl-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;
-  background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.18);border-radius:12px 12px 0 0;border-bottom:none}
-.wl-title{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:var(--purple);
-  letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:7px}
-.wl-count{font-size:10px;background:var(--purple-dim);border:1px solid rgba(139,92,246,0.28);
-  color:var(--purple);padding:2px 9px;border-radius:20px;font-weight:700}
-.wl-list{border:1px solid rgba(139,92,246,0.18);border-radius:0 0 12px 12px;overflow:hidden}
-.wl-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.04)}
-.wl-item:last-child{border-bottom:none}
-.wl-pos{font-family:'Orbitron',monospace;font-size:10px;color:var(--muted);width:20px;text-align:center;flex-shrink:0}
-.wl-avatar{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;
-  font-size:14px;flex-shrink:0;background:var(--purple-dim);border:1px solid rgba(139,92,246,0.18)}
-.wl-info{flex:1;min-width:0}
-.wl-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.wl-meta{font-size:10px;color:var(--muted2);margin-top:1px}
-.wl-status{display:inline-flex;align-items:center;font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px}
-.wl-waiting{background:var(--purple-dim);border:1px solid rgba(139,92,246,0.28);color:var(--purple)}
-.wl-confirmed{background:var(--green-dim);border:1px solid rgba(16,185,129,0.22);color:var(--green)}
-.wl-empty{text-align:center;padding:32px 20px;color:var(--muted);font-size:12px;
-  border:1px solid rgba(139,92,246,0.14);border-top:none;border-radius:0 0 12px 12px}
-.wl-join-box{background:rgba(139,92,246,0.03);border:1px solid rgba(139,92,246,0.16);border-radius:12px;padding:16px;margin-bottom:14px}
-.wl-join-title{font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px}
-.wl-actions{display:flex;gap:5px;flex-shrink:0}
-.admin-only-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:700;
-  color:var(--gold);background:var(--gold-dim);border:1px solid rgba(245,200,66,0.22);padding:2px 8px;border-radius:20px;letter-spacing:.4px}
 
 /* Admin lock overlay */
 .admin-locked{position:relative}
@@ -472,8 +444,6 @@ a{color:inherit;text-decoration:none}
 /* ═══ RESPONSIVE ═══ */
 @media(max-width:860px){
   .bracket-layout{flex-direction:column}
-  .bracket-sidebar{width:100%;position:static}
-  .bracket-sidebar .wl-list{max-height:280px}
 }
 @media(max-width:700px){
   .bnav{display:block}
@@ -551,24 +521,7 @@ a{color:inherit;text-decoration:none}
       <div class="bracket-main">
         <div id="bracket-render"></div>
       </div>
-      <div class="bracket-sidebar" id="bracket-sidebar">
-        <div class="wl-header">
-          <div class="wl-title">⏳ Waitlist <span class="wl-count" id="wl-public-count">0</span></div>
-          <span class="admin-only-badge" id="wl-reg-badge">🟢 Open</span>
-        </div>
-        <div id="wl-join-section" style="display:none">
-          <div class="wl-join-box" style="border:1px solid rgba(139,92,246,0.16);border-radius:0;border-top:none;border-bottom:none;padding:12px 14px">
-            <div class="wl-join-title">🎮 Join Waitlist</div>
-            <div class="fg"><label class="fl">Team / Player Name</label><input class="fi" id="wl-inp-name" placeholder="e.g. Team Inferno"/></div>
-            <div class="fg"><label class="fl">Discord / Contact</label><input class="fi" id="wl-inp-contact" placeholder="e.g. inferno#1234"/></div>
-            <div class="fg"><label class="fl">Region</label><input class="fi" id="wl-inp-region" placeholder="Philippines"/></div>
-            <button class="btn btn-blue" style="width:100%;justify-content:center;margin-top:4px" onclick="joinWaitlist()">➕ Join Waitlist</button>
-          </div>
-        </div>
-        <div class="wl-list" id="wl-public-list" style="max-height:60vh;overflow-y:auto">
-          <div class="wl-empty">No one on the waitlist yet.</div>
-        </div>
-      </div>
+
     </div>
   </div>
 
@@ -629,7 +582,6 @@ a{color:inherit;text-decoration:none}
       <div class="ws" id="ws-players" onclick="goStep('players')"><span class="ws-n">3</span>Players</div>
       <div class="ws" id="ws-bracket" onclick="goStep('bracket')"><span class="ws-n">4</span>Bracket</div>
       <div class="ws" id="ws-results" onclick="goStep('results')"><span class="ws-n">5</span>Results</div>
-      <div class="ws" id="ws-waitlist" onclick="goStep('waitlist')"><span class="ws-n">⏳</span>Waitlist</div>
     </div>
     <div class="modal-body">
 
@@ -784,37 +736,7 @@ a{color:inherit;text-decoration:none}
         </div>
       </div>
 
-      <!-- WAITLIST -->
-      <div class="wp" id="wp-waitlist">
-        <div class="sec-title">⏳ Waitlist Manager</div>
-        <div class="fr2" style="margin-bottom:12px">
-          <div class="fg">
-            <label class="fl">Registration Status</label>
-            <select class="fsel" id="wl-reg-status" onchange="saveWaitlistSettings()">
-              <option value="open">🟢 Open — Anyone can join</option>
-              <option value="closed">🔴 Closed</option>
-            </select>
-          </div>
-          <div class="fg">
-            <label class="fl">Max Slots (0 = unlimited)</label>
-            <input class="fi" id="wl-max-slots" type="number" min="0" value="0" oninput="saveWaitlistSettings()"/>
-          </div>
-        </div>
-        <div class="sec-title" style="margin-top:4px">➕ Add Entry Manually</div>
-        <div class="fr2">
-          <div class="fg"><label class="fl">Name</label><input class="fi" id="adm-wl-name" placeholder="Team or Player name"/></div>
-          <div class="fg"><label class="fl">Contact</label><input class="fi" id="adm-wl-contact" placeholder="Discord / email"/></div>
-        </div>
-        <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
-          <button class="btn btn-blue" onclick="adminAddWaitlist()">➕ Add to Waitlist</button>
-        </div>
-        <div class="sec-title">👥 Entries (<span id="adm-wl-count">0</span>)</div>
-        <div id="adm-wl-list" style="display:flex;flex-direction:column;gap:7px;max-height:280px;overflow-y:auto"></div>
-        <div class="btn-row" style="margin-top:16px">
-          <button class="btn btn-red btn-sm" onclick="goStep('results')">← Back</button>
-          <button class="btn btn-green" onclick="saveClose()">✅ Save &amp; Close</button>
-        </div>
-      </div>
+
 
     </div>
   </div>
@@ -950,8 +872,7 @@ function blankTourney(id){
     format:'Double Elimination', matchFormat:'Best of 3',
     venue:'', country:'', prize1:'', prize2:'', prize3:'',
     teams:[], players:[], bracket:{champion:null,rounds:[]},
-    nextTeamId:1, nextPlayerId:1, nextMatchId:1,
-    waitlist:[], nextWlId:1, wlOpen:true, wlMaxSlots:0, createdAt:Date.now() };
+    nextTeamId:1, nextPlayerId:1, nextMatchId:1, createdAt:Date.now() };
 }
 
 /* ═══════════════════════════════════════════
@@ -1031,7 +952,6 @@ function goStep(step){
   if(step==='players') populateTeamSelect();
   if(step==='bracket'){ renderAdminBracketPreview(); }
   if(step==='results') renderResultsList();
-  if(step==='waitlist'){ renderAdminWaitlist(); loadWaitlistSettings(); }
   if(step==='event') loadEventForm();
 }
 
@@ -1454,7 +1374,7 @@ function buildSEBracketHTML(t,b){
   const champ=b.champion?getTeamFrom(t,b.champion):null;
 
   // Card height constant (px) for connector math
-  const CARD_H=68, GAP=10, LABEL_H=28, CONN_W=32;
+  const CARD_H=88, GAP=14, LABEL_H=32, CONN_W=40;
 
   // Build per-round match counts
   const sizes=rounds.map(r=>r.matches.length);
@@ -1464,7 +1384,7 @@ function buildSEBracketHTML(t,b){
   // Labels row
   html+=`<div style="display:inline-flex;align-items:flex-start;gap:0;padding:0 12px 0 12px;min-width:max-content">`;
   rounds.forEach((r,ri)=>{
-    html+=`<div style="width:200px;text-align:center;font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:var(--muted2);letter-spacing:2px;text-transform:uppercase;padding-bottom:8px">${r.name.toUpperCase()}</div>`;
+    html+=`<div style="width:240px;text-align:center;font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:var(--muted2);letter-spacing:2px;text-transform:uppercase;padding-bottom:8px">${r.name.toUpperCase()}</div>`;
     if(ri<rounds.length-1) html+=`<div style="width:${CONN_W}px"></div>`;
   });
   html+=`<div style="width:${CONN_W}px"></div><div style="width:140px;text-align:center;font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase;padding-bottom:8px">CHAMPION</div>`;
@@ -1483,7 +1403,7 @@ function buildSEBracketHTML(t,b){
     // Each match in this round "absorbs" 2 from previous
     const spacingBetween=ri===0?GAP:Math.floor((totalH_prev-totalH_cur)/(Math.max(curCount-1,1)))+GAP;
 
-    html+=`<div style="display:flex;flex-direction:column;width:200px;gap:${spacingBetween}px">`;
+    html+=`<div style="display:flex;flex-direction:column;width:240px;gap:${spacingBetween}px">`;
     round.matches.forEach((m,mi)=>{
       html+=buildVisualMatchCard(t,m,false);
     });
@@ -1577,7 +1497,7 @@ function buildDEBracketHTML(t,b){
 }
 
 function buildFullHorizontalBracket(t,rounds,champ){
-  const CARD_H=68, GAP=10, CONN_W=32;
+  const CARD_H=88, GAP=14, CONN_W=40;
   const sizes=rounds.map(r=>r.matches.length);
   const maxCount=Math.max(...sizes);
 
@@ -1618,7 +1538,7 @@ function buildFullHorizontalBracket(t,rounds,champ){
   // Round name labels
   html+=`<div style="display:inline-flex;align-items:flex-start;gap:0;padding:0 8px;min-width:max-content">`;
   rounds.forEach((r,ri)=>{
-    html+=`<div style="width:200px;text-align:center;font-family:'Orbitron',monospace;font-size:8px;font-weight:700;color:var(--muted2);letter-spacing:1.8px;text-transform:uppercase;padding-bottom:8px">${r.name.toUpperCase()}</div>`;
+    html+=`<div style="width:240px;text-align:center;font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:var(--muted2);letter-spacing:1.8px;text-transform:uppercase;padding-bottom:8px">${r.name.toUpperCase()}</div>`;
     if(ri<rounds.length-1) html+=`<div style="width:${CONN_W}px"></div>`;
   });
   // Champion label
@@ -1634,7 +1554,7 @@ function buildFullHorizontalBracket(t,rounds,champ){
     const isGF=round.section==='gf'||round.section==='gfr';
     const connColor=sectionColor[round.section]||'rgba(34,211,238,0.25)';
 
-    html+=`<div style="display:flex;flex-direction:column;width:200px;gap:${gap}px">`;
+    html+=`<div style="display:flex;flex-direction:column;width:240px;gap:${gap}px">`;
     round.matches.forEach(m=>{ html+=buildVisualMatchCard(t,m,isGF); });
     html+=`</div>`;
 
@@ -1672,7 +1592,7 @@ function buildFullHorizontalBracket(t,rounds,champ){
 }
 
 function buildRoundsVisual(t,rounds){
-  const CARD_H=68, GAP=10, CONN_W=32;
+  const CARD_H=88, GAP=14, CONN_W=40;
   const sizes=rounds.map(r=>r.matches.length);
 
   let html=`<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:8px">`;
@@ -1680,7 +1600,7 @@ function buildRoundsVisual(t,rounds){
   // Labels
   html+=`<div style="display:inline-flex;align-items:flex-start;gap:0;padding:0 4px;min-width:max-content">`;
   rounds.forEach((r,ri)=>{
-    html+=`<div style="width:200px;text-align:center;font-family:'Orbitron',monospace;font-size:8px;font-weight:700;color:var(--muted2);letter-spacing:1.8px;text-transform:uppercase;padding-bottom:8px">${r.name.toUpperCase()}</div>`;
+    html+=`<div style="width:240px;text-align:center;font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:var(--muted2);letter-spacing:1.8px;text-transform:uppercase;padding-bottom:8px">${r.name.toUpperCase()}</div>`;
     if(ri<rounds.length-1) html+=`<div style="width:${CONN_W}px"></div>`;
   });
   html+=`</div>`;
@@ -1691,7 +1611,7 @@ function buildRoundsVisual(t,rounds){
     const prevCount=ri===0?curCount*2:sizes[ri-1];
     const spacingBetween=GAP+(ri>0?Math.max(0,Math.floor(((prevCount*(CARD_H+GAP)-GAP)-(curCount*(CARD_H+GAP)-GAP))/Math.max(curCount,1))):0);
 
-    html+=`<div style="display:flex;flex-direction:column;width:200px;gap:${spacingBetween}px">`;
+    html+=`<div style="display:flex;flex-direction:column;width:240px;gap:${spacingBetween}px">`;
     round.matches.forEach(m=>{ html+=buildVisualMatchCard(t,m,false); });
     html+=`</div>`;
 
@@ -1718,7 +1638,7 @@ function buildVisualMatchCard(t,m,isGF=false){
 
   const badge=isLive
     ?`<div class="vm-badge vm-live-badge"><span class="live-dot"></span>LIVE</div>`
-    :m.isBye?`<div class="vm-badge" style="color:var(--gold);background:rgba(245,200,66,0.1);border:1px solid rgba(245,200,66,0.25);border-radius:4px;font-size:7px;font-weight:800;padding:2px 6px;letter-spacing:.3px">WAITING</div>`
+    :m.isBye?`<div class="vm-badge" style="color:var(--purple);background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.3);border-radius:4px;font-size:8px;font-weight:800;padding:2px 7px;letter-spacing:.4px">WAITING</div>`
     :isDone?`<div class="vm-badge vm-done-badge">✓ DONE</div>`
     :(m.time&&m.time!=='TBD')?`<div class="vm-time">${m.time}</div>`
     :`<div class="vm-badge vm-pending-badge">UPCOMING</div>`;
@@ -1735,11 +1655,11 @@ function buildVisualTeamRow(t,team,teamId,score,winner,isDone,isLive){
   const seed=seedIdx>=0?seedIdx+1:null;
   if(!team){
     return `<div class="vt vt-tbd">
-      <div class="vt-bar" style="background:transparent"></div>
-      <div class="vt-seed" style="background:rgba(255,255,255,0.04);color:var(--muted)">?</div>
-      <div class="vt-name" style="color:var(--gold);font-style:normal;font-size:9px;font-weight:800;letter-spacing:.5px">WAITING</div>
+      <div class="vt-bar" style="background:rgba(139,92,246,0.35)"></div>
+      <div class="vt-seed" style="background:rgba(139,92,246,0.12);color:var(--purple)">—</div>
+      <div class="vt-name" style="color:var(--purple);font-style:normal;font-size:11px;font-weight:800;letter-spacing:.6px">WAITING</div>
       <div class="vt-score" style="color:var(--muted)">—</div>
-      <div class="vt-star"></div>
+      <div class="vt-star" style="color:var(--purple);font-size:9px">●</div>
     </div>`;
   }
   const isW=isDone&&winner===teamId;
@@ -1925,108 +1845,8 @@ function findMatchInfo(t,id){
   return {match:null,section:null,ri:-1,mi:-1};
 }
 
-/* ═══════════════════════════════════════════
-   WAITLIST
-═══════════════════════════════════════════ */
-function saveWaitlistSettings(){
-  const t=T(); if(!t) return;
-  const sel=document.getElementById('wl-reg-status');
-  const maxEl=document.getElementById('wl-max-slots');
-  if(sel) t.wlOpen=sel.value==='open';
-  if(maxEl) t.wlMaxSlots=parseInt(maxEl.value)||0;
-  saveDB();
-}
-function loadWaitlistSettings(){
-  const t=T(); if(!t) return;
-  const sel=document.getElementById('wl-reg-status');
-  const maxEl=document.getElementById('wl-max-slots');
-  if(sel) sel.value=t.wlOpen===false?'closed':'open';
-  if(maxEl) maxEl.value=t.wlMaxSlots||0;
-}
-function joinWaitlist(){
-  const t=T(); if(!t){ notify('No active tournament',true); return; }
-  if(t.wlOpen===false){ notify('⚠️ Registration is closed!',true); return; }
-  if(t.wlMaxSlots>0&&t.waitlist.length>=t.wlMaxSlots){ notify('⚠️ Waitlist is full!',true); return; }
-  const name=document.getElementById('wl-inp-name').value.trim();
-  const contact=document.getElementById('wl-inp-contact').value.trim();
-  const region=document.getElementById('wl-inp-region').value.trim();
-  if(!name){ notify('⚠️ Name required!',true); return; }
-  t.waitlist.push({ id:t.nextWlId++, name, contact, region, status:'waiting', joinedAt:Date.now() });
-  saveDB();
-  document.getElementById('wl-inp-name').value='';
-  document.getElementById('wl-inp-contact').value='';
-  document.getElementById('wl-inp-region').value='';
-  renderPublicWaitlist(); notify(`✅ ${name} added to waitlist!`);
-}
-function adminAddWaitlist(){
-  const t=T(); if(!t) return;
-  const name=document.getElementById('adm-wl-name').value.trim();
-  const contact=document.getElementById('adm-wl-contact').value.trim();
-  const region=document.getElementById('adm-wl-region').value.trim();
-  if(!name){ notify('⚠️ Name required!',true); return; }
-  t.waitlist.push({ id:t.nextWlId++, name, contact, region:region||'N/A', status:'waiting', joinedAt:Date.now() });
-  saveDB();
-  document.getElementById('adm-wl-name').value='';
-  document.getElementById('adm-wl-contact').value='';
-  document.getElementById('adm-wl-region').value='';
-  renderAdminWaitlist(); notify(`✅ ${name} added!`);
-}
-function removeWaitlistEntry(id){
-  const t=T(); if(!t) return;
-  t.waitlist=t.waitlist.filter(x=>x.id!==id);
-  saveDB(); renderAdminWaitlist();
-}
-function updateWLStatus(id,status){
-  const t=T(); if(!t) return;
-  const e=t.waitlist.find(x=>x.id===id);
-  if(e) e.status=status;
-  saveDB(); renderAdminWaitlist();
-}
-function renderAdminWaitlist(){
-  const t=T(); if(!t) return;
-  const el=document.getElementById('adm-wl-list');
-  const cnt=document.getElementById('adm-wl-count');
-  if(!el) return;
-  if(cnt) cnt.textContent=t.waitlist?.length||0;
-  if(!t.waitlist?.length){ el.innerHTML='<div style="color:var(--muted);font-size:12px;text-align:center;padding:12px">No entries yet.</div>'; return; }
-  el.innerHTML=t.waitlist.map((e,i)=>`
-    <div class="a-team-row" style="flex-wrap:wrap;gap:6px">
-      <div style="font-family:Orbitron,monospace;font-size:10px;color:var(--muted);width:20px">${i+1}</div>
-      <div class="a-team-info">
-        <div class="a-team-name">${e.name}</div>
-        <div class="a-team-sub">${e.contact||''}${e.region?' · '+e.region:''}</div>
-      </div>
-      <select class="fsel" style="flex:0;width:auto;font-size:10px;padding:4px 24px 4px 8px" onchange="updateWLStatus(${e.id},this.value)">
-        <option value="waiting"${e.status==='waiting'?' selected':''}>⏳ Waiting</option>
-        <option value="confirmed"${e.status==='confirmed'?' selected':''}>✅ Confirmed</option>
-        <option value="rejected"${e.status==='rejected'?' selected':''}>❌ Rejected</option>
-      </select>
-      <button class="btn btn-red btn-xs btn-icon" onclick="removeWaitlistEntry(${e.id})">✕</button>
-    </div>`).join('');
-}
-function renderPublicWaitlist(){
-  const t=T();
-  const el=document.getElementById('wl-public-list');
-  const cnt=document.getElementById('wl-public-count');
-  const joinSec=document.getElementById('wl-join-section');
-  const regBadge=document.getElementById('wl-reg-badge');
-  if(!t||!el) return;
-  const open=t.wlOpen!==false;
-  if(cnt) cnt.textContent=t.waitlist?.length||0;
-  if(regBadge) regBadge.textContent=open?'🟢 Open':'🔴 Closed';
-  if(joinSec) joinSec.style.display=open?'block':'none';
-  if(!t.waitlist?.length){ el.innerHTML='<div class="wl-empty">No one on the waitlist yet.</div>'; return; }
-  el.innerHTML=t.waitlist.map((e,i)=>`
-    <div class="wl-item">
-      <div class="wl-pos">${i+1}</div>
-      <div class="wl-avatar">🎮</div>
-      <div class="wl-info">
-        <div class="wl-name">${e.name}</div>
-        <div class="wl-meta">${e.region||''}</div>
-      </div>
-      <div class="wl-status wl-${e.status==='confirmed'?'confirmed':e.status==='rejected'?'waiting':'waiting'}">${e.status==='confirmed'?'✓ Confirmed':'⏳'}</div>
-    </div>`).join('');
-}
+
+
 function saveClose(){ saveDB(); closeAdmin(); renderAll(); }
 
 /* ═══════════════════════════════════════════
@@ -2038,7 +1858,6 @@ function renderAll(){
   renderTeams();
   renderSchedule();
   renderStandings();
-  renderPublicWaitlist();
 }
 
 function renderBracketView(){
